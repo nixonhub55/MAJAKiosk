@@ -1,0 +1,86 @@
+
+1. CUSTOMIZATION 1: PASSWORD COMPLEXITY
+=========================================
+
+IF passwordComplexEnabled is set to "YES" 
+
+	------------------
+	Apply validation:
+	------------------	
+	- Password meet the minimum requirements, must contains:
+	- at least xx characters long
+		
+		** xx means passwordLength field in companysetting, if 0 value, the default value is 10.
+	
+	- at least one lower case letter (a-z)
+	- at least one upper case letter (A-Z)
+	- at least one number (0-9)
+	- and must have special characters like $, @, #, &, !	
+		
+ELSE
+
+	- user can apply any password they want
+	
+	
+	
+2. CUSTOMIZATION 2: PASSWORD RE-USE LIMIT
+=========================================
+
+
+IF passwordReuseRestriction have value, apply the limit.
+
+	Example: If the value is 8, the user can only use the same password 8 times in their entire career as active user.
+		
+ELSE
+
+	if the setup is zero value, the system bypass the rule.
+
+
+
+3. CUSTOMIZATION 3: User LOCKED-OUT   (OKS NA)
+=========================================
+
+
+	if lockedOutDuration have value then apply the rule, else if zero, apply the default value which is 6.
+
+
+	There are 2 types of locked out recovery, auto and manual.
+
+	if lockedOutRecoveryType = 'auto'
+		apply lockedOutDuration (in minutes) rule 
+		
+		let say. 10 minutes:
+		
+		get difference between the last attempt datetime and current datetime (convert to timestamp). please refer to get-auth how to get it.
+		
+		if the diff is greater than 10 minutes (lockedOutDuration) then Clear the lockedOut status.
+		
+	else 
+		"Manual" Unlock of user by System Admin using User-Setup module.
+			
+			
+		
+		
+4. CUSTOMIZATION 4: passwordChangeInitLogon
+============================================
+
+	if this is set to No (zero), user is not required to change password.
+	
+	if pStatus (users table) is equal to D, meaning this is new user. 
+		then if passwordChangeInitLogon = 1, required to change the password...then apply all the rules.
+		
+	else 
+		the user can still use the default password given by the system.
+		
+		
+		
+5. CUSTOMIZATION 5: passwordExpiredDays
+=========================================
+
+	IF zero then do not validate or don't apply the rule.
+		
+	IF has value, let say 90 days:
+	
+		The system will get the max value of dt_created (datetime) when password created versus the current datetime.		
+		If difference of current datetime and max value then the user is required or mandatory change the password, then apply all the rules.
+		
