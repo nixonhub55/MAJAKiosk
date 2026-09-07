@@ -308,8 +308,7 @@ foreach ($access_rights['rows'] as $rows) {
 
                                     <a class="nav-link {{ request()->is(patterns: 'timeentry_approval') ? 'active-tab' : '' }}"
                                           href='{{url("/timeentry_approval")}}'>
-                                          <div class="sb-nav-link-icon"> <i class="fa-solid fa-business-time"></i></div>Time
-                                          Entry
+                                          <div class="sb-nav-link-icon"> <i class="fa-solid fa-business-time"></i></div>Certificate of Attendance
                                           <div id="temientry_not_div"></div>
                                     </a>
 
@@ -403,8 +402,7 @@ foreach ($access_rights['rows'] as $rows) {
                               @if($timeEntry == 1)
                                     <a class="nav-link {{ request()->is(patterns: 'te_application') ? 'active-tab' : '' }}"
                                           href='{{url("/te_application")}}'>
-                                          <div class="sb-nav-link-icon"><i class="fa-solid fa-business-time"></i></div>Time
-                                          Entry
+                                          <div class="sb-nav-link-icon"><i class="fa-solid fa-business-time"></i></div>Certificate of Attendance
                                     </a>
                               @endif
 
@@ -432,11 +430,11 @@ foreach ($access_rights['rows'] as $rows) {
                               @endif
 
                               @if($timeAdjustment == 1)
-                                    <a class="nav-link {{ request()->is(patterns: 'time_adj_application') ? 'active-tab' : '' }}"
+                                   <!--  <a class="nav-link {{ request()->is(patterns: 'time_adj_application') ? 'active-tab' : '' }}"
                                           href='{{url("/time_adj_application")}}'>
                                           <div class="sb-nav-link-icon"><i class="bi bi-stopwatch-fill"></i></div>Time
                                           Adjustment
-                                    </a>
+                                    </a> -->
                               @endif
 
                               @if($officialBusiness == 1)

@@ -248,7 +248,7 @@
                   if (response.num!==0){
                         var id = JSON.parse(response.msg).id;
                         if (id!== undefined){  
-                              console.log(id); 
+                              console.log(id);  
                               show_error_message(id,JSON.parse(response.msg).msg);  
                         }
                         else{
@@ -344,10 +344,11 @@
       }
 
 
-      function remove_row(thisId){
+      function remove_row(thisId){ 
             var row = document.getElementById(thisId); 
             // console.clear();  console.log('before:'+JSON.stringify(day_list));
-             day_list.splice((thisId-1), 1); 
+            this.day_list = day_list.splice((thisId-1), 1); 
+            console.log(day_list);
             row.style.display = "none"; 
       }
 

@@ -48,7 +48,7 @@ class TimeAdjustmentModel extends Model
         }
 
         //if ($pintMode==1 && $str['num']==0){
-        if ($pintMode==0 && $str['num']==0){
+        if ($pintMode==1 && $str['num']==0){
             
             $fullname=session()->get('fullname');
             $identityId = session()->get('identityId');

@@ -188,7 +188,7 @@ class Traffic extends Controller
     }
     
     public function show_change_sched(){
-        $identityId = session()->get('identityId');
+        $identityId = session()->get('identityId'); 
         $id = $this->authentication->f_endecrypt($_POST['id'], 'd', $identityId);
         $status  = $_POST['status'];
         $data['sched_details']=$this->calendar_model->sp_load_sched_day([0,$identityId,$id,$status]); 
@@ -1945,8 +1945,7 @@ class Traffic extends Controller
             $applicationMovement = $this->authentication->sp_application_movement([0,$switch,$id,$_POST['database'],$_POST['r_Opt'] ?? '']);
             $secondApprover = current(array_filter($applicationMovement['rows'], fn($row) => (int)$row->isNextApprover === 1)) ?? null;
             
-            /* ssssss */
-
+            
             // APPROVE=1  REJECT=0 
             $submit_response = $this->authentication->sp_for_approval_response([$database,$pint_mode, $switch, $id, $identityId, $val, $txtReject]);
  
@@ -1986,7 +1985,7 @@ class Traffic extends Controller
                     return $data; */
 
                     $fullname= $applicationMovement['rows'][0]->fullName;      
-                    $sendTo =  $applicationMovement['rows'][0]->emailAddress;      
+                    $sendTo =  $secondApprover->approverEmail;
                     
                      
                     $email['subject']="Kiosk Update ".$appName." Request Pending Approval";
@@ -2068,158 +2067,7 @@ class Traffic extends Controller
             return $this->authentication->sp_delete_application_form([0, $switchNo, $_appNo]);
         }
 
-    /*         
- 
-        if ($mode == 14) {  ///multi approve
-
-            header('Content-Type: text/html; charset=utf-8');
-            header('Cache-Control: no-cache');
-            header('X-Accel-Buffering: no');
-
-            $switch = $_POST['switch'];
-            $pint_mode = $_POST['pint_mode']; 
-            $r_code = $_POST['r_code'];
-            $items = json_decode($_POST['items'],true);
-                
-            $approvedValues = ['1', 'A'];   
-            $num1 = 0;
-            foreach($items as $item){
-                $items[$num1]['AppNo'] = $this->authentication->f_endecrypt($item['id'], 'd', $identityId);  
-            $num1+=1;
-            }
- 
-            $submitResponse = $this->authentication->sp_selected_items_response([$pint_mode, $identityId, $switch, $r_code, json_encode($items)]);
-
-
-            
-            $total = count($items);
-            $num = 0;
-            foreach($items as $item){
-
-                $items[$num]['AppNo'] = $this->authentication->f_endecrypt($item['id'], 'd', $identityId); 
-                
-                $id = $items[$num]['AppNo'];
-                $progData['num'] = 0; $progData['isUpdate'] = 1; $progData['msg'] = "Done"; $progData['id'] = $id; $this->updateProgress($progData);
-                $secondAppover = $this->authentication->sp_get_next_authorizer([0,$switch,$id]);
-                $formVal = $this->authentication->sp_get_document_info([0,$switch]);
-                $app_user = $this->authentication->sp_app_user_info([0,$id,$switch]);
-                $appName = $formVal['rows'][0]->formVal; 
-                $appDate = $app_user['rows'][0]->appDate; 
-                $approverName = array_column($secondAppover['rows'], 'authorizer'); 
-                $decision =   ($r_code=="A") ? "<b style='color:green'>Approved</b>" : "<b style='color:red'>Rejected</b>";
-                
-                if (!empty($secondAppover['rows']) && $r_code=="A") {   
-
-                    $fullname=session()->get('fullname'); 
-                    $sendTo = array_column($app_user['rows'], 'emailAddress');      
-                    $ccTo = array_column($app_user['rows'], 'emailAddress');    
-                    $email['sendTo']=$sendTo; 
-                    $email['CcTo']=$ccTo; 
-
-                    
-                    
-                    $email['subject']="Kiosk Update: Your ".$appName." Request # [".$id."]";
-                    $currentUrl = session()->get('currentUrl');
-                    
-                   
-
-                    $email['sendTo']=$sendTo;
-                    $email['CcTo']=[]; 
-                    $email['header']=["Hi Ma'am/Sir"]; 
-                    $email['content']=["
-                                        Your ".$appName." request, submitted on ".$appDate.", has been ".$decision." by ".session()->get('fullname').". 
-                                        </br></br>
-                                        The request has been forwarded to ".implode(", ", $approverName)." for review at the ".$secondAppover['rows'][0]->stageName.".
-                                        </br></br>
-                                        To review and take action on this request, please click the link below:<br>
-                                        <i style='color:blue'><u>".$currentUrl."</u></i>
-                                        "]; 
-                    $email['footer']=["<b style='color:red'>Note</b>:<i>We cannot recieve your reply here. Thank you!</i>"]; 
-
-                    
-                    $this->authentication->sendEmail(new Request($email));
-                    
-
-                    $fullname=$app_user['rows'][0]->fullName; 
-                    $sendTo = array_column($secondAppover['rows'], 'emailAddress');
-                     
-
-                    $email['subject']="Kiosk Update ".$appName." Request Pending Approval";
-                    $currentUrl = session()->get('currentUrl');
-                        
-                    $email['sendTo']=$sendTo; 
-                    $email['CcTo']=[];  
-                    $email['header']=["Hi Ma'am/Sir"]; 
-                    $email['content']=["
-                                        You have received a ".$appName." request submitted by ".$fullname.", which is now pending your review and approval. 
-                                        </br></br>
-                                        Application #:".$id.".
-                                        </br></br>
-                                        To review and take action on this request, please click the link below:<br>
-                                        <i style='color:blue'><u>".$currentUrl."</u></i>
-                                        "]; 
-                    $email['footer']=["<b style='color:red'>Note</b>:<i>We cannot recieve your reply here. Thank you!</i>"];
-                    
-                    $this->authentication->sendEmail(new Request($email)); 
-
-                }else{
-
-                    //if($r_code=="1"){
-                    if (in_array($r_code, $approvedValues)) {  
-                        
-                        $fullname=$app_user['rows'][0]->fullName; 
-                        $sendTo = array_column($app_user['rows'], 'emailAddress');    
-                         
-                        $email['subject']="Kiosk Update: Your ".$appName." Request # [".$id."]";
-                        $currentUrl = session()->get('currentUrl');
-                        
-                        $email['sendTo']=$sendTo;
-                        $email['CcTo']=[]; 
-                        $email['header']=["Hi Ma'am/Sir"]; 
-                        $email['content']=["We are pleased to inform you that your ".$appName." request, submitted on ".$appDate.", has been fully ".$decision.". 
-                                             </br>The request has successfully completed all required approval stages.
-                                            </br></br>
-                                            You may log in to the kiosk portal to view the final status and details of your request:<br>
-                                            <i style='color:blue'><u>".$currentUrl."</u></i>
-                                            "]; 
-                        $email['footer']=["<b style='color:red'>Note</b>:<i>We cannot recieve your reply here. Thank you!</i>"]; 
-
-                        $this->authentication->sendEmail(new Request($email)); 
-
-                    }else{
-                        
-                        
-
-                        $fullname=$app_user['rows'][0]->fullName; 
-                        $sendTo = array_column($app_user['rows'], 'emailAddress');    
-                         
-                        $email['subject']="Kiosk Update: Your ".$appName." Request # [".$id."]";
-                        $currentUrl = session()->get('currentUrl');
-                        
-                        $email['sendTo']=$sendTo;
-                        $email['CcTo']=[]; 
-                        $email['header']=["Hi Ma'am/Sir"]; 
-                        $email['content']=["
-                                            Your ".$appName." request, submitted on ".$appDate.", has been ".$decision." by ".session()->get('fullname').". 
-                                             
-                                            </br></br>
-                                            To review and take action on this request, please click the link below:<br>
-                                            <i style='color:blue'><u>".$currentUrl."</u></i>
-                                            "]; 
-                        $email['footer']=["<b style='color:red'>Note</b>:<i>We cannot recieve your reply here. Thank you!</i>"]; 
-
-                        $this->authentication->sendEmail(new Request($email)); 
-
-                    } 
-
-                }  
-                    
-                $num++;
-            } 
-       
-            return $submitResponse; 
-        }   
-    */
+    
 
         if ($mode == 14) { /* Multi-database multi approve */
             header('Content-Type: application/x-ndjson');
@@ -2267,7 +2115,6 @@ class Traffic extends Controller
             $itemsByDatabase = [];
 
             foreach ($items as $item) {
-                
                 $sourceDatabase = $item['_srcDb'];
 
                 if (!isset($itemsByDatabase[$sourceDatabase])) {
@@ -2284,7 +2131,10 @@ class Traffic extends Controller
 
                 $response = $this->authentication->sp_selected_items_response([ $sourceDatabase,  $pintMode, $identityId, $switch, $rCode,  json_encode($databaseItems) ]);
  
-                if ((int) ($response['num'] ?? 0) !== 0) {  return $response;  } 
+                if ((int) ($response['num'] ?? 0) !== 0) {  
+                    //return $response; 
+                    $progData['num'] = 0; $progData['isUpdate'] = 1; $progData['msg'] = "Error"; $progData['id'] = $items[$index]['AppNo']; $this->updateProgress($progData);      
+                } 
                 $submitResponse = $response;
             }
 
@@ -2296,7 +2146,7 @@ class Traffic extends Controller
 
                 $id             = $item['AppNo'];
                 $sourceDatabase = $item['_srcDb'];
-                sleep(2);
+                 
 
                 $applicationMovement = $this->authentication->sp_application_movement([0,$switch,$id,$sourceDatabase,$_POST['r_Opt'] ?? '']);
                 $secondApprover = current(array_filter($applicationMovement['rows'], fn($row) => (int)$row->isNextApprover === 1)) ?? null;
@@ -2339,8 +2189,8 @@ class Traffic extends Controller
                     return $data; */
 
                     $fullname= $applicationMovement['rows'][0]->fullName;      
-                    $sendTo =  $applicationMovement['rows'][0]->emailAddress;      
-                    
+                    $sendTo =  $secondApprover->approverEmail;      
+                     
                      
                     $email['subject']="Kiosk Update ".$appName." Request Pending Approval";
                     $currentUrl = session()->get('currentUrl');
@@ -2358,6 +2208,7 @@ class Traffic extends Controller
                                         "]; 
                     $email['footer']=["<b style='color:red'>Note</b>:<i>We cannot recieve your reply here. Thank you!</i>"];  
                     $this->authentication->sendEmail(new Request($email)); 
+                    
                 }else{
                     
                     if($rCode=="A"){
@@ -2469,7 +2320,7 @@ class Traffic extends Controller
             $r_Day = $_POST['r_Day'];
             $r_scSchedule = $_POST['r_scSchedule'];
             $r_scReason = $_POST['r_scReason']; 
-            $r_attachedFiles = $_POST['r_attachedFiles']; 
+            $r_attachedFiles = $_POST['r_attachedFiles'] ?? '[]'; 
 
             $data['kiosklocked'] = 0;
             $schedArray = $this->calendar_model->sp_get_employee_schedule([0, $identityId,$r_Day]);
@@ -3033,6 +2884,7 @@ class Traffic extends Controller
     }
 
     public function DisconnectDB(){
+        return;
         $url = url()->previous(); 
         $path = parse_url($url, PHP_URL_PATH);  
         $lastSegment = last(explode('/', trim($path, '/')));  
@@ -3208,6 +3060,7 @@ class Traffic extends Controller
         $data['id'] = $r_id; 
         $data['locations'] = $this->authentication->get_locations([2]);
         $data['attachedFiles'] = $this->authentication->sp_requestattachments([0,$r_id,'officialbusiness',$_POST['r_opt'] ?? '']);  
+        //echo json_encode($data['user_details']);
         return view('layouts.tabs.request.request_form.ob_application', $data);
     }
 

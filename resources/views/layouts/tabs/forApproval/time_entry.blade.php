@@ -326,6 +326,8 @@
                   GlovalHTMLObjLoading(0,objID); 
             }
            else{
+            /* GlovalHTMLObjLoading(0,objID); 
+            console.log(response); */
             window.location.href='{{url("/timeentry_approval")}}'; 
            }
  

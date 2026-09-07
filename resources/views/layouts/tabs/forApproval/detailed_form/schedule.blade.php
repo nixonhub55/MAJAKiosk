@@ -76,7 +76,7 @@
       $scPreviousSched=$details['rows'][0]->scPreviousSched; 
       $scSchedule=$details['rows'][0]->scSchedule;   
       $scPayrollPeriod=$details['rows'][0]->scPayrollPeriod; 
-      $payrollDateRange=$details['rows'][0]->payrollDateRange; 
+      $payrollDateRange=$details['rows'][0]->payrollDateRange ?? ""; 
       $scReqDate=$details['rows'][0]->scReqDate; 
 
 
@@ -124,29 +124,27 @@
 
             <div class="col-12"> 
                   <div class="row mb-3">
-                        <div class="col-6">
+                        <div class="col-4">
                               <label for="appEmployeeId" class="form-label">Previous Schedule</label>
                               <input type="text" class="form-control" id="appEmployeeId" value="<?=$scPreviousSched?>" readonly>
                         </div>
-                        <div class="col-6">
+                        <div class="col-4">
                               <label for="appEmployeeName" class="form-label">Requested Schedule</label>
                               <input type="text" class="form-control" id="appEmployeeName" value="<?=$scSchedule?>"
                                     readonly>
                         </div> 
-                  </div>
-                  <div class="row"> 
-                        <div class="col-6">
+                   
+                        <div class="col-4">
                               <label for="appEmployeeName" class="form-label">Schedule Request Date</label>
                               <input type="text" class="form-control" id="appEmployeeName" value="<?=$scReqDate?>"
                                     readonly>
                         </div> 
 
-                        <div class="col-6">
+                        <div class="col-6" hidden>
                               <label for="appDepartment" class="form-label">SC Payroll Period</label> 
                               <div class="form-control"><?=$scPayrollPeriod?> <drange style="color:green; font-size:10px">(<?= $payrollDateRange ?>)</drange></div>
                               <!-- <input type="text" class="form-control" id="appDepartment" value="<?=$scPayrollPeriod?> (<?= $payrollDateRange ?>)" readonly> -->
-                        </div>
-                  </div>
+                        </div> 
             </div> 
 
             <div class="col-12">

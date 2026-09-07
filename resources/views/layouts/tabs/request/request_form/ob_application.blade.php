@@ -425,63 +425,82 @@
             }
       }  
  
-      function PickDate(){
+      function PickDate() {  
             var df = document.getElementById('ob_from_date').value;
-            var dt = document.getElementById('ob_to_date').value; 
+            var dt = document.getElementById('ob_to_date').value;
 
-            let startDate = new Date(df); 
-            let endDate = new Date(dt);   
-              
-            if (day_list.length!==0){
-                  
-                  console.clear();
-                  console.log(day_list);
-                  if (confirm('All existing schedules will be deleted, are you sure?')){ 
-                        LoopConfirmation(startDate,endDate,df,dt); 
-                  }
-                  else{
-                        document.getElementById('ob_from_date').value='<?=$obDateFrom?>';
-                        document.getElementById('ob_to_date').value='<?=$obDateTo?>';
-                  }
-            }else{
-               LoopConfirmation(startDate,endDate,df,dt); 
+            let startDate = new Date(df);
+            let endDate = new Date(dt); 
+ 
+            const dfExists = day_list.some(item => item.obLstDate === startDate.toLocaleDateString('en-CA'));
+            const dtExists = day_list.some(item => item.obLstDate === endDate.toLocaleDateString('en-CA'));
+            
+            if(!dfExists && !dtExists){
+                  day_list=[];
             }
-                
+            
+            /* 
+                  if (day_list.length !== 0) {  
+                        if (confirm('All existing schedules will be deleted, are you sure?')) {
+                              this.obDateFrom = df;
+                              this.obDateTo = dt;
+                              LoopConfirmation(startDate, endDate, df, dt);
+                        }
+                        else {  
+                              document.getElementById('ob_from_date').value = obDateFrom;
+                              document.getElementById('ob_to_date').value = obDateTo;
+                        }
+                  } else {
+                        LoopConfirmation(startDate, endDate, df, dt);
+                  } 
+            */
+
+           LoopConfirmation(startDate, endDate, df, dt);
+
       }
 
-      function LoopConfirmation(startDate,endDate,df,dt){
 
-            if (startDate <= endDate){
-                  day_list = [];
-                  var tb1_tbody = document.getElementById('tb1_tbody'); 
+      function LoopConfirmation(startDate, endDate, df, dt) {
+            if (startDate <= endDate) {
+                  //day_list = [];
+                  var tb1_tbody = document.getElementById('tb1_tbody');
                   tb1_tbody.innerHTML = '';
-            }
+            } 
             var num = 1;
-            while (startDate <= endDate) { 
-                  var id = document.getElementById('appEmployeeId').value; 
+            while (startDate <= endDate) {
+                  var id = document.getElementById('appEmployeeId').value;
                   var obLstDate = startDate.toLocaleDateString('en-CA');
-                  var Day =  startDate.toLocaleString('en-us', { weekday: 'long' }); 
-                  day_list.push(
+                  var Day = startDate.toLocaleString('en-us', { weekday: 'long' });
+                  const exists = day_list.some(item => item.obLstDate === obLstDate);
+                  if(!exists){
+                        day_list.push(
                               {
-                                    "id":id, 
-                                    "obLstAppNo":0, 
-                                    "obLstDate":obLstDate,
-                                    "obLstTimeFrom":"00:00",
-                                    "obLstTimeTo":"00:00",
-                                    "obLstTotHours":"00:00",
-                                    "obLstID":num,
-                                    "obLocation":"",
-                                    "location":"",
-                                    "locationName":""
-                              });   
-            startDate.setDate(startDate.getDate() + 1); 
-            num+=1;
+                                    "id": id,
+                                    "obLstAppNo": 0,
+                                    "obLstDate": obLstDate,
+                                    "obLstTimeFrom": "00:00",
+                                    "obLstTimeTo": "00:00",
+                                    "obLstTotHours": "00:00",
+                                    "obLstID": num,
+                                    "obLocation": "",
+                                    "location": "",
+                                    "locationName": ""
+                              });
+                  }
+                  startDate.setDate(startDate.getDate() + 1);
+                  num += 1;
             }
 
-            if (df<=dt){ 
-            get_officialbusiness_days();  
-                  
+            //Re-ordeer num by date
+            this.day_list.sort((a, b) => new Date(a.obLstDate) - new Date(b.obLstDate)); 
+            day_list.forEach((a, index) => { a.obLstID = index + 1; }); 
+
+            if (df <= dt) {
+                  get_officialbusiness_days();
+
             }
+
+      
       }
 
       function SelectLocation(thisID,txtId,num){

@@ -92,7 +92,7 @@
  
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
     crossorigin="anonymous"></script> 
-<script src="{{asset('admin/js/scripts.js')}}"></script>
+<!-- <script src="{{asset('admin/js/scripts.js')}}"></script> -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
 <script src="https://cdn.jsdelivr.net/npm/simple-datatables@9.2.1/dist/umd/simple-datatables.min.js" crossorigin="anonymous"></script>
@@ -161,9 +161,9 @@
         });
     }); 
 
-    window.addEventListener("beforeunload", function () {
+    /* window.addEventListener("beforeunload", function () {
         navigator.sendBeacon("/clear-session");
-    });
+    }); */
 
 </script>
 

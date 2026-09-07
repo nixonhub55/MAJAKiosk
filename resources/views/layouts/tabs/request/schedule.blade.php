@@ -218,7 +218,7 @@
             formData.append('r_attachedFiles',JSON.stringify(attachedFiles));  
 
             const response = await exec_XMLHttpRequest(formData,'{{url("/call_ajax")}}');   
-
+ 
             setTimeout(() => {
                   addAuditTrails(window.location.pathname.split('/').pop(),JSON.stringify(response));
                   GlovalHTMLObjLoading(0,objID); 
@@ -246,7 +246,8 @@
                   }
                   GlovalHTMLObjLoading(0,objID);  
             }else{
-                 //console.log(response);
+                  //console.log(response);
+                 // GlovalHTMLObjLoading(0,objID);  
                   window.location.href='{{url("/sc_application")}}';
                   
             }

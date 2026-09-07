@@ -399,29 +399,39 @@ class Authentication extends Model
         $facilityDetails = json_encode(["url" => $this->getBaseUrl(), "seconds" => $end]);
         $spParams = [$mode,$identityId,$activity,$status,$details,$machainDetails,$facilityDetails]; 
        //return $this->exec_store_proc('sp_userAuditTrails', $spParams); 
-         
+        
+ 
        // JSON file location
         $file = storage_path('app/audit_trails.json');
 
-        /*   // Get existing data
-            if (file_exists($file)) {  $json = file_get_contents($file);  $data = json_decode($json, true) ?? [];
-            } else {  $data = [];  }
+       /*  // Get existing data
+        if (file_exists($file)) {
+            $json = file_get_contents($file);
+            $data = json_decode($json, true) ?? [];
+        } else {
+            $data = [];
+        }
 
-            // Add new audit record
-            $data[] = [
-                'mode' => $mode,
-                'identity_id' => $identityId,
-                'activity' => $activity,
-                'status' => $status,
-                'details' => $details,
-                'machine_details' => $machainDetails,
-                'facility_details' => $facilityDetails,
-                'created_at' => now()->toDateTimeString()
-            ];
+        // Add new audit record
+        $data[] = [
+            'mode' => $mode,
+            'identity_id' => $identityId,
+            'activity' => $activity,
+            'status' => $status,
+            'details' => $details,
+            'machine_details' => $machainDetails,
+            'facility_details' => $facilityDetails,
+            'created_at' => now()->toDateTimeString()
+        ];
 
-            // Save JSON
-            file_put_contents(   $file,   json_encode($data, JSON_PRETTY_PRINT),  LOCK_EX  );  
-        */
+        // Save JSON
+        file_put_contents(
+            $file,
+            json_encode($data, JSON_PRETTY_PRINT),
+            LOCK_EX
+        );  */
+
+                
 
         $auditRecord = [
             'mode' => $mode,
@@ -434,7 +444,11 @@ class Authentication extends Model
             'created_at' => now()->toDateTimeString(),
         ];
 
-        file_put_contents( $file, json_encode($auditRecord, JSON_UNESCAPED_SLASHES) . PHP_EOL,   FILE_APPEND | LOCK_EX);
+        file_put_contents(
+            $file,
+            json_encode($auditRecord, JSON_UNESCAPED_SLASHES) . PHP_EOL,
+            FILE_APPEND | LOCK_EX
+        );
            
     }
     
@@ -709,11 +723,7 @@ class Authentication extends Model
 
 
    public function sendEmail(Request $data_request){
-
-         if(env('APP_ENV')=="local"){ // avoid mailing into correct receiver
-            $data_request['sendTo'] = "onnix2559@gmail.com";
-         }
-
+    
          $start  = microtime(true);
          $num = 0;
          $status = "Failed";

@@ -71,10 +71,10 @@ header('Access-Control-Allow-Headers: Content-Type,x-prototype-version,x-request
     <link rel="stylesheet" href="{{ asset('admin/css/style-login.css')}}">
     <title>Payfactor Web Portal</title>
 
-    <script src="{{ asset('admin/js/face-api.min.js')}}?v={{ filemtime(public_path('admin/js/scripts.js')) }}"></script>
+    <script src="{{ asset('admin/js/face-api.min.js')}}?v={{ filemtime(public_path('admin/js/face-api.min.js')) }}"></script>
     <script src="{{ asset('admin/js/scripts.js')}}?v={{ filemtime(public_path('admin/js/scripts.js')) }}"></script>
-    <script src="{{ asset('admin/js/jquery-3.6.0.min.js')}}?v={{ filemtime(public_path('admin/js/scripts.js')) }}"></script>
-    <script src="{{ asset('admin/js/all.js')}}?v={{ filemtime(public_path('admin/js/scripts.js')) }}"></script>
+    <script src="{{ asset('admin/js/jquery-3.6.0.min.js')}}?v={{ filemtime(public_path('admin/js/jquery-3.6.0.min.js')) }}"></script>
+    <script src="{{ asset('admin/js/all.js')}}?v={{ filemtime(public_path('admin/js/all.js')) }}"></script>
 
  
 

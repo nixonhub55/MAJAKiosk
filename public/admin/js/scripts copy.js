@@ -526,9 +526,10 @@ async function exec_XMLHttpRequest(formData, this_page) {
             var lines = progressBuffer.split("\n");
             progressBuffer = lines.pop();
 
-            lines.forEach(line => { 
+            lines.forEach(line => {
+
                 line = line.trim();
-                console.log(line);
+ 
                 if (!line) {
                     return;
                 }
@@ -540,7 +541,7 @@ async function exec_XMLHttpRequest(formData, this_page) {
                     if (progData.isUpdate == 1) {
 
                         const obj = document.getElementsByName(progData.id)[0];
-                        
+
                         if (obj) {
                             obj.parentElement
                                 .querySelectorAll('.progress-message')
@@ -576,11 +577,20 @@ async function exec_XMLHttpRequest(formData, this_page) {
                 var lines = xhr.responseText
                     .trim()
                     .split("\n");
-
-                var finalResponse = JSON.parse(
-                    lines[lines.length - 1]
-                );
+                
+                console.log(lines);
+                var finalResponse = JSON.parse(lines[lines.length - 1]);
                 //console.log('Done');
+
+                // TEMPORARY SOLUTION
+               /*  var forceToCorrect = ({
+                    "num" : 0,
+                    "msg" : {"id":"","msg":"OK"}
+                });
+                console.log(lines);
+                var finalResponse = JSON.parse(lines[lines.length - 1]) || forceToCorrect; */
+
+
                 resolve(finalResponse);
 
             } else {
