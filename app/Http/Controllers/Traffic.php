@@ -1332,6 +1332,11 @@ class Traffic extends Controller
         $mode = $_POST['mode'] ?? 0;
         $data['details'] =$this->authentication->sp_application_info([0,$mode,$data['id'],$identityId,'F','1991-01-01','',$_POST['r_opt'] ?? '']);
         $data['attachedFiles'] = $this->authentication->sp_requestattachments([0,$data['id'],'overtime',$_POST['r_opt'] ?? '']); 
+        
+        if($mode==1000){
+           return view('layouts.tabs.forApproval.detailed_form.overtimeExt', $data);
+        }
+        
         return view('layouts.tabs.forApproval.detailed_form.overtime', $data);
     }
  
@@ -1497,8 +1502,14 @@ class Traffic extends Controller
     public function show_wizard(){
         $identityId = session()->get('identityId'); 
         $switch = $_POST['switch'];
+        
+        if($switch==1000){
+            $switch = 0;
+        }
+
         $appNo = $_POST['appNo']; 
         $data['wizard'] = $this->authentication->sp_get_approval([0,$switch,$appNo,$_POST['r_opt'] ?? '']); 
+        //echo json_encode($data['wizard']);
         return view('layouts.tabs.request.request_form.wizard',$data);
     }
 
@@ -1509,7 +1520,7 @@ class Traffic extends Controller
 
         $switch = $_POST['id'];
 
-        $id = $_POST['id'];
+        $id = ($_POST['id']==1000) ? 0 : $_POST['id']; 
         $df = $_POST['df'];
         $dt = $_POST['dt'];
         $status = $_POST['status'];
@@ -1679,12 +1690,14 @@ class Traffic extends Controller
             $ot_date = $_POST['ot_date'];
             $ot_from = $_POST['ot_from'];
             $ot_to = $_POST['ot_to'];
-            $ot_tot_break = $_POST['ot_tot_break'];
-            $ot_time_from = $_POST['ot_time_from'];
-            $ot_time_to = $_POST['ot_time_to'];
-            $time_tot = $_POST['time_tot'];
+
+            $ot_tot_break = $_POST['ot_tot_break'] ?? '';
+            $ot_time_from = $_POST['ot_time_from'] ?? '';
+            $ot_time_to = $_POST['ot_time_to'] ?? '';
+            $time_tot = $_POST['time_tot'] ?? '';
+
             $otExtAllowance = $_POST['otExtAllowance'];
-            $otExtAllowanceDetals = $_POST['otExtAllowanceDetals'] ?? '';
+            $otExtAllowanceDetals = $_POST['otExtAllowanceDetals'] ?? '[]';
             $r_attachedFiles = $_POST['r_attachedFiles'];
            
             $ot_list = $this->authentication->sp_dropdown_fill([0, 0]);
@@ -2868,14 +2881,19 @@ class Traffic extends Controller
         $data['ot_types'] = $this->overtime_model->sp_dropdown_fill([0, 0]);
         $data['kiosklocked'] = $this->authentication->sp_get_payrollperiod_kiosk([0, $identityId]);
         $data['user_details'] = $this->authentication->get_identity_sp([0, $identityId]);
-        $data['locations'] = $rows; 
+        $data['locations'] = $rows;
+        $data['attachedFiles'] = $this->authentication->sp_requestattachments([0,$id,'overtime',$_POST['r_opt'] ?? '']);   
         return view('layouts.tabs.request.request_form.overtimeExt_application_form', $data);
     }
 
     public function overtimeExtMapping(){ 
-       $mode = $_POST['mode'];
+       /* $mode = $_POST['mode'];
        $details = json_encode($_POST['details']); 
-       return $this->overtime_model->sp_portal_overtime_ext_allo_mapping([$mode, $details]);
+       return $this->overtime_model->sp_portal_overtime_ext_allo_mapping([$mode, $details]); */
+       //$identityId = session()->get('identityId');
+       $data['test'] = 0;
+       $data['regularSchedule'] = $this->overtime_model->sp_portal_overtime_ext_allo_mapping([3, $_POST['details'] ?? '']); 
+       return view('layouts.tabs.request.request_form.overtimeExtDetails', $data);
     }
 
     public function show_sp_get_users()

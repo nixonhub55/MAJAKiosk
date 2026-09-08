@@ -81,6 +81,8 @@
       
       $otFrDate = $details['rows'][0]->otFrDate;   
       $otToDate = $details['rows'][0]->otToDate;  
+      $location = $details['rows'][0]->location;  
+      
       
       //return;
       //echo json_encode($otExtAllowDetails);
@@ -147,25 +149,26 @@
                   </div>
             </div>
 
-            @if($otExtAllowance==0)
-                  <div class="col-12">
-                        <div class="row">
-                              <div class="col-4">
-                                    <label for="appEmployeeId" class="form-label">Work Date</label>
-                                    <input type="text" class="form-control" id="appEmployeeId" value="<?=$otDate?>" readonly>
-                              </div>
-                              <div class="col-4">
-                                    <label for="appEmployeeName" class="form-label">Time</label>
-                                    <input type="text" class="form-control" id="appEmployeeName" value="<?=$Time?>"
-                                          readonly>
-                              </div>
-                              <div class="col-4">
-                                    <label for="appDepartment" class="form-label">Work Tot. Hours</label>
-                                    <input type="text" class="form-control" id="appDepartment" value="<?=$otTotHours?>" readonly>
-                              </div>
+            
+            <div class="col-12">
+                <div class="row">
+                        <div class="col-4">
+                            <label for="appEmployeeId" class="form-label">Location</label>
+                            <input type="text" class="form-control" id="appEmployeeId" value="<?=$location?>" readonly>
                         </div>
-                  </div>
-            @endif
+
+                        <div class="col-4">
+                            <label for="appEmployeeId" class="form-label">Date From</label>
+                            <input type="text" class="form-control" id="appEmployeeId" value="<?=$otFrDate?>" readonly>
+                        </div>
+                        
+                        <div class="col-4">
+                            <label for="appEmployeeId" class="form-label">Date To</label>
+                            <input type="text" class="form-control" id="appEmployeeId" value="<?=$otToDate?>" readonly>
+                        </div> 
+                </div>
+            </div>
+           
             
             @if($otExtAllowance==1)
                   <div class="col-12" id="divExtensionAllowanceDetails"></div>
@@ -184,9 +187,9 @@
                   </div> 
             </div>
 
-            @if($otExtAllowance==0)
-                  <div class="col-12 mt-3" id="divFormsAttachmentsFiles"></div>
-            @endif
+            
+            <div class="col-12 mt-3" id="divFormsAttachmentsFiles"></div>
+            
 
             <div class="col-12">
                   <div class="row">
@@ -217,14 +220,11 @@
       var current = document.getElementById('current');
       var maxLength = textarea.getAttribute('maxlength');
 
+      loadAttachmentsAssets(0,'<?= json_encode($attachedFiles['rows'][0]->files ?? []) ?>');
       textarea.addEventListener('input', () => {
       current.textContent = textarea.value.length;
       }); 
       
 </script>
 
-@if($otExtAllowance==0)
-<script>
-      loadAttachmentsAssets(0,'<?= json_encode($attachedFiles['rows'][0]->files ?? []) ?>');
-</script>
-@endif
+ 

@@ -17,17 +17,31 @@
                   $appStatus = $app_detail->r_decision;
                   $otExtAllowance = $app_detail->otExtAllowance ?? 0;
                   $otExtAllowDetails=json_decode($app_detail->otExtAllowDetails,true) ?? "{}";
+                  
+                  $otID = $app_detail->otID;
+                  $location = $app_detail->location;
+                  $otFrDate = $app_detail->otFrDate;
+                  $otToDate = $app_detail->otToDate;
             ?>
+            <script>
+                  async function  getRegularSched() {  
+                        var details = {
+                              "appNo" : 0,
+                              "username" : '<?=$otID ?>',
+                              "df" : '<?= $otFrDate ?>',
+                              "dt" : '<?= $otToDate ?>',
+                        }  
+                        var container = document.getElementById('divExtensionAllowanceDetails');
+                        var formData = new FormData();   
+                        formData.append('mode',0);    
+                        formData.append('details',JSON.stringify(details));       
+                        GlovalHTMLObjLoading(1,'divExtensionAllowanceDetails');
+                        var response = await call_page_into_div(formData,'{{url("/overtimeExtMapping")}}',container);  
+                  }
+            </script>
             <form class="row g-3">
                         <div class="col-md-12">
-                              <div class="row">
-                                    @if($otExtAllowance==1)
-                                          <div class="col-12 mb-3">
-                                                <div class="alert alert-success" role="alert">
-                                                      <i class="fas fa-exclamation-triangle"></i> This application requesting for <b>Extension Allowance</b>
-                                                </div>
-                                          </div>
-                                    @endif
+                              <div class="row"> 
                                     <div class="col-md-4">
                                           <label for="appNumber" class="form-label">Application Number</label>
                                           <input type="text" class="form-control" id="appNumber"  value="<?=$app_detail->otAppNo?>" readonly>
@@ -60,61 +74,50 @@
                               </div>
                         </div>
 
-
-                        <div class="col-md-12">
-                              <div class="row">
-                                    <div class="col-md-4">
-                                          <label for="appEmployeeId" class="form-label">Work Date</label>
-                                          <input type="text" class="form-control" id="appEmployeeId" value="<?=$app_detail->otDate?>" readonly>
-                                    </div>
-                                    <div class="col-md-4">
-                                          <label for="appEmployeeName" class="form-label">Time</label>
-                                          <input type="text" class="form-control" id="appEmployeeName" value="<?=$app_detail->otTimeFrom?> To <?=$app_detail->otTimeTo?>"
-                                                readonly>
-                                    </div>
-                                    <div class="col-md-4">
-                                          <label for="appDepartment" class="form-label">Work Tot. Hours</label>
-                                          <input type="text" class="form-control" id="appDepartment" value="<?=$app_detail->otTotHours?>" readonly>
+                        @if($otExtAllowance==0)
+                              <div class="col-md-12">
+                                    <div class="row">
+                                          <div class="col-md-4">
+                                                <label for="appEmployeeId" class="form-label">Work Date</label>
+                                                <input type="text" class="form-control" id="appEmployeeId" value="<?=$app_detail->otDate?>" readonly>
+                                          </div>
+                                          <div class="col-md-4">
+                                                <label for="appEmployeeName" class="form-label">Time</label>
+                                                <input type="text" class="form-control" id="appEmployeeName" value="<?=$app_detail->otTimeFrom?> To <?=$app_detail->otTimeTo?>"
+                                                      readonly>
+                                          </div>
+                                          <div class="col-md-4">
+                                                <label for="appDepartment" class="form-label">Work Tot. Hours</label>
+                                                <input type="text" class="form-control" id="appDepartment" value="<?=$app_detail->otTotHours?>" readonly>
+                                          </div>
                                     </div>
                               </div>
-                        </div>
+                        @endif
 
                         @if($otExtAllowance==1)
                               <div class="col-12">
-                                    <div class="row"> 
-                                          <div class="col-3">
-                                                <label for="appEmployeeId" class="form-label">Regular Schedule</label>
-                                                <input type="text" class="form-control" id="appEmployeeId" value="<?=$otExtAllowDetails['regSched']?>" readonly>
+                              <div class="row">
+                                          <div class="col-4">
+                                          <label for="appEmployeeId" class="form-label">Location</label>
+                                          <input type="text" class="form-control" id="appEmployeeId" value="<?=$location?>" readonly>
                                           </div>
 
-                                          <div class="col-3">
-                                                <label for="appEmployeeId" class="form-label">DTR In</label>
-                                                <input type="text" class="form-control" id="appEmployeeId" value="<?=$otExtAllowDetails['actTimeIn']?>" readonly>
+                                          <div class="col-4">
+                                          <label for="appEmployeeId" class="form-label">Date From</label>
+                                          <input type="text" class="form-control" id="appEmployeeId" value="<?=$otFrDate?>" readonly>
                                           </div>
-
-                                          <div class="col-3">
-                                                <label for="appEmployeeId" class="form-label">DTR Out</label>
-                                                <input type="text" class="form-control" id="appEmployeeId" value="<?=$otExtAllowDetails['actTimeOut']?>" readonly>
-                                          </div>
-
-                                          <div class="col-3">
-                                                <label for="appEmployeeId" class="form-label">Total Allowance</label>
-                                                <input type="text" class="form-control" id="appEmployeeId" value="<?=$otExtAllowDetails['totalAllowance']?>" readonly>
-                                          </div>
-                                          @if($otExtAllowDetails['isImage']!=="")
-                                                <div class="col-12 mt-3 mb-3">
-                                                      Attached file. <br>
-                                                      @if($otExtAllowDetails['isImage']==1)
-                                                            <img src="{{ $otExtAllowDetails['attachmentContent'] }}" alt="Image">
-                                                      @else 
-                                                      <a href="{{ $otExtAllowDetails['attachmentContent']}}" target="_blank" rel="noopener noreferrer">
-                                                            <i class="fa-regular fa-file-pdf text-danger fs-1"></i> <br> {{ $otExtAllowDetails['attachmentFileName'] }}
-                                                      </a> 
-                                                      @endif 
-                                                </div>
-                                          @endif
-                                    </div>
+                                          
+                                          <div class="col-4">
+                                          <label for="appEmployeeId" class="form-label">Date To</label>
+                                          <input type="text" class="form-control" id="appEmployeeId" value="<?=$otToDate?>" readonly>
+                                          </div> 
                               </div>
+                              </div>
+
+                              <div class="col-12" id="divExtensionAllowanceDetails"></div>
+                              <script>
+                                    getRegularSched();
+                              </script>
                         @endif
       
                         <div class="col-md-12">

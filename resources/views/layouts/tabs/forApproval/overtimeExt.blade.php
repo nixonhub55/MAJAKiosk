@@ -23,7 +23,7 @@
             <div class="modal-dialog modal-lg">
                   <div class="modal-content">
                         <div class="modal-header bg-primary text-white">
-                              <h5 class="modal-title" id="overtimeModalLabel">Overtime / Under Time Application Details</h5>
+                              <h5 class="modal-title" id="overtimeModalLabel">Extension Allowance Application Details</h5>
                               <button type="button" class="btn-close" data-bs-dismiss="modal"  aria-label="Close"></button>
                         </div>
                         <div class="modal-body" id="modal_body"></div> 
@@ -132,7 +132,7 @@
                                           </select>
                                     </div> 
                                     <div class="col-md-6 d-flex justify-content-end align-items-center"> 
-                                    <button class="btn btn-primary" id="btnFilter" onclick="Filter_History(1,this.id,0)">
+                                    <button class="btn btn-primary" id="btnFilter" onclick="Filter_History(1,this.id,1000)">
                                           <i class="fas fa-filter"></i><b> Filter</b></button>
                                     </div>
                               </div> 
@@ -337,7 +337,7 @@
       }
  
       $(document).ready(function() {
-            Filter_History(1,0, 0); 
+            Filter_History(1,0, 1000); 
             RemoveClassInCheckBox('#th_checkbox');
             get_original_checkbox_list('datatablesPending'); 
       });

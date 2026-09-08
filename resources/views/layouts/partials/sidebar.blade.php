@@ -2,7 +2,7 @@
 <?php
 $hrisDetails = json_decode(session()->get('have_hris_details'), true);  
 $raw = $hrisDetails['Hris']['PersonalInformation'] ?? [];
- 
+$username = session()->get('username');
 /**
  * RESULT MENU (FLAT)
  * - Take Identity children only
@@ -469,8 +469,8 @@ foreach ($access_rights['rows'] as $rows) {
                                           Clearance Form
                                     </a> -->
                               @endif
-
-                              @if($overtime == 1 && session()->get('batchId')=="OFR")
+ 
+                              @if($overtime == 1 && session()->get('batchId')=="OFR" && $username=="")
                                     <a class="nav-link {{ request()->is(patterns: 'overtimeExt_application') ? 'active-tab' : '' }}"
                                           href='{{url("/overtimeExt_application")}}'>
                                           <div class="sb-nav-link-icon"> <i class="bi bi-clock-fill"></i></div>Extension Allowance  

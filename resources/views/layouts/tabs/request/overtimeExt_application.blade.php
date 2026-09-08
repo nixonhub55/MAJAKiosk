@@ -35,7 +35,7 @@
  -->
 <?php 
       $df = date('Y-m-d', strtotime("-1 Month")); 
-      $dt = date('Y-m-d'); 
+      $dt = date('Y-m-d');  
 ?>
 
 <div class="container-fluid mt-4 card-container"> 
@@ -164,6 +164,7 @@
 
       var this_mode = 0;
       var selectedID="";
+      var toExtItems = [];
 
       window.addEventListener('DOMContentLoaded', event => { 
 
@@ -180,54 +181,29 @@
       });
 
       
-      
       async function SubmitRequest(pint_mode,objID) {   
             
-            var otExtAllowanceDetals = {
-                  "regSched" : this.regSched,
-                  "actTimeIn" : this.dtrIn,
-                  "actTimeOut" : this.dtrOut,
-                  "totalTime" : this.allHrs, 
-                  "otTotal" :  this.totalTime,
-                  "totalAllowance" : this.otTotal, 
-                  "attachmentFileName" : attachmentFileName,
-                  "attachmentContent" : attachmentContent,
-                  "attachmentFilType" : attachmentFilType,
-            } 
-
-            
+             
             GlovalHTMLObjLoading(1,objID); 
             document.getElementById('div_validation').innerHTML="";
             var formData = new FormData();
             formData.append('mode', '1');    
             formData.append('pint_mode', pint_mode);  
             formData.append('otAppNo',selectedID);    
-            formData.append('ot_type',document.getElementById('appOvertimeType').value);   
+            formData.append('ot_type','OT');   
             formData.append('ot_location',document.getElementById('appLocation').value); 
-            formData.append('ot_date',document.getElementById('otWorkDate').value); 
 
-            formData.append('ot_from',document.getElementById('otWorkDate').value); 
-            formData.append('ot_to',document.getElementById('otWorkDate').value); 
-            formData.append('ot_tot_break','00:00'); 
-            formData.append('ot_time_from',this.dtrIn); 
-            formData.append('ot_time_to',this.dtrOut); 
-            formData.append('time_tot',this.totalTime);   
-
-            /* formData.append('ot_from',document.getElementById('ot_from_date').value); 
+            formData.append('ot_date',document.getElementById('ot_from_date').value);  
+            formData.append('ot_from',document.getElementById('ot_from_date').value); 
             formData.append('ot_to',document.getElementById('ot_to_date').value); 
-            formData.append('ot_tot_break',document.getElementById('tot_break').value); 
-            formData.append('ot_time_from',document.getElementById('otTimeFrom').value); 
-            formData.append('ot_time_to',document.getElementById('otTimeTo').value); 
-            formData.append('time_tot',document.getElementById('appTotalTime').value);    */
             
             formData.append('Remarks',document.getElementById('txtRemarks').value);      
             formData.append('otExtAllowance',1);  
-            formData.append('otExtAllowanceDetals',JSON.stringify(otExtAllowanceDetals));  
-            formData.append('r_attachedFiles',[]);  
+            formData.append('otExtAllowanceDetals',JSON.stringify(toExtItems));  
+            formData.append('r_attachedFiles',JSON.stringify(attachedFiles)); 
 
             const response = await exec_XMLHttpRequest(formData,'{{url("/call_ajax")}}');  
-            /* console.clear();
-            console.log(response); */
+            //console.clear();  console.log(response); return false;
             setTimeout(() => {
                   addAuditTrails(window.location.pathname.split('/').pop(),JSON.stringify(response));
                   GlovalHTMLObjLoading(0,objID); 

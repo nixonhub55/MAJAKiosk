@@ -254,11 +254,15 @@ function ForApprovalStatus(appStatus) {
     }
     if (appStatus == "F") {
         var checkbox = document.getElementById('verification_checkbox');
+        var btns = document.getElementById('btns');
 
         if (checkbox !== null) {
             var label = document.querySelector(`label[for='${checkbox.id}']`);
             if (btns_div) {
                 btns_div.innerHTML = "";
+            }
+            if(btns){
+                btns.innerHTML = "";
             }
             checkbox.style.display = "none";
             label.innerHTML = "<i class='fa-solid fa-triangle-exclamation'></i>  Note: You cannot Edit application [Pending] for approval!"
@@ -325,7 +329,7 @@ function FadeOut() {
 
 
 
-async function call_page_into_div(formData, this_page) {
+async function call_page_into_div(formData, this_page, container = null) {
     isCompleted = false;
     return new Promise((resolve, reject) => {
         var csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
@@ -333,8 +337,21 @@ async function call_page_into_div(formData, this_page) {
         xhr.open('POST', this_page, true);
         xhr.setRequestHeader('X-CSRF-TOKEN', csrfToken);
         xhr.onload = function () {
-            if (xhr.status >= 200 && xhr.status < 300) {
+            if (xhr.status >= 200 && xhr.status < 300) { 
                 resolve(xhr.responseText)
+
+                if(container){ 
+                    container.innerHTML = xhr.responseText;
+                    container.querySelectorAll('script').forEach(oldScript => {
+                        const newScript = document.createElement('script');  
+                        Array.from(oldScript.attributes).forEach(attr => {
+                            newScript.setAttribute(attr.name, attr.value);
+                        }); 
+                        newScript.textContent = oldScript.textContent; 
+                        oldScript.replaceWith(newScript);
+                    });
+                }
+                
             } else {
                 reject(new Error('Request failed with status: ' + xhr.status));
                 //console.log(xhr);

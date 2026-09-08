@@ -157,7 +157,7 @@
       $department = $data->departmentName;
       $fullname = $data->lastName." ".$data->firstName." ".$data->middleName;
 
-      $opAppNo="N/A";     
+      $otAppNo="N/A";     
       $otType="";     
       $otAppDate=date('Y-m-d');
       $location="";
@@ -173,10 +173,11 @@
       $otExtAllowance=0; 
       $otExtAllowDetails = "{}";
       $r_srcDb="";
+      $reason="";
 
 
       foreach ($overtime['rows'] as $rows) {
-            $opAppNo=$rows->otAppNo;
+            $otAppNo=$rows->otAppNo;
             $r_srcDb=$rows->r_srcDb;
             $otType=$rows->otType;
             $otAppDate=$rows->otAppDate;
@@ -195,7 +196,7 @@
       }  
       //regSched, actTimeIn, actTimeOut, totalAllowance, attachmentFileName, attachmentContent
       //echo json_encode($otExtAllowDetails);
-      //echo json_encode($otExtAllowDetails['regSched']);
+      //echo json_encode($otExtAllowDetails['regSched']); 
 ?>
 
 <script>
@@ -210,16 +211,6 @@
       var attachmentContent = '<?= $otExtAllowDetails['attachmentContent'] ?? '' ?>';
       var attachmentFilType = '<?= $otExtAllowDetails['attachmentFilType'] ?? '' ?>';
       
-       /* var otExtAllowanceDetals = {
-                  "regSched" : this.regSched,
-                  "actTimeIn" : this.dtrIn,
-                  "actTimeOut" : this.dtrOut,
-                  
-                  "otTotal" :  this.totalTime, 
-                  "attachmentFileName" : attachmentFileName,
-                  "attachmentContent" : attachmentContent,
-                  "attachmentFilType" : attachmentFilType,
-            }  */
 </script>
 
 <div id="div_validation"></div>
@@ -229,7 +220,7 @@
                   <div class="row"> 
                         <div class="col-md-4">
                               <label for="appNumber" class="form-label">Application Number</label>
-                              <input type="text" class="form-control" id="appNumber"  value="<?=$opAppNo?>" readonly>
+                              <input type="text" class="form-control" id="appNumber"  value="<?=$otAppNo?>" readonly>
                         </div>
                         <div class="col-md-4">
                               <label for="appDate" class="form-label">Application Date</label>
@@ -262,13 +253,7 @@
             <div class="col-12">
                   <div class="row">
 
-                        <div class="col-md-4">
-                              <label id="lbl_appOvertimeType" for="appOvertimeType" class="form-label">Type</label>
-                              <select id="appOvertimeType" class="form-select"> 
-                                    <option  value="OT" selected>Overtime</option>
-                              </select>
-                        </div> 
-
+                        
                         <div class="col-md-4">
                               <label id="lbl_appLocation" for="appLocation" class="form-label">Location</label>
                               <select id="appLocation" class="form-select"> 
@@ -279,73 +264,8 @@
                         </div>
 
                         <div class="col-md-4">
-                              <label id="lbl_otWorkDate" for="otWorkDate" class="form-label">Work Date</label>
-                              <input type="text" class="form-control" id="otWorkDate" value="<?=$otDate?>" onchange="return getRegularSched(this.value)" autocomplete="off" >                          
-                              <script>
-                                    $(document).ready(function () {
-                                          var disabledArr = <?=json_encode($kiosklocked['rows'])?>;  
-                                          $('#otWorkDate').datepicker({
-                                                dateFormat: "yy-mm-dd",
-                                                beforeShowDay: function (date) {
-                                                      for (var i = 0; i < disabledArr.length; i++) {
-
-                                                            var From = disabledArr[i].from.split("/");
-                                                            var To = disabledArr[i].to.split("/");
-                                                            var FromDate = new Date(From[2], From[1] - 1, From[0]);
-                                                            var ToDate = new Date(To[2], To[1] - 1, To[0]);
-
-
-                                                            if (date >= FromDate && date <= ToDate) {
-                                                                  return [true, ""];
-                                                            }
-                                                      }
-                                                      return [false, "red"];
-                                                },
-                                          });
-                                    });
-                              </script>
-                        </div>
-
-                        
-                  </div>
-            </div>
-
-
-
-            <!-- <div class="col-12">  
-                  <div class="row"> 
-
-                         <div class="col-md-4">
-                              <label id="lbl_otWorkDate" for="otWorkDate" class="form-label">Work Date</label>
-                              <input type="text" class="form-control" id="otWorkDate" value="<?=$otDate?>" onchange="return getRegularSched(this.value)" autocomplete="off" >                          
-                              <script>
-                                    $(document).ready(function () {
-                                          var disabledArr = <?=json_encode($kiosklocked['rows'])?>;  
-                                          $('#otWorkDate').datepicker({
-                                                dateFormat: "yy-mm-dd",
-                                                beforeShowDay: function (date) {
-                                                      for (var i = 0; i < disabledArr.length; i++) {
-
-                                                            var From = disabledArr[i].from.split("/");
-                                                            var To = disabledArr[i].to.split("/");
-                                                            var FromDate = new Date(From[2], From[1] - 1, From[0]);
-                                                            var ToDate = new Date(To[2], To[1] - 1, To[0]);
-
-
-                                                            if (date >= FromDate && date <= ToDate) {
-                                                                  return [true, ""];
-                                                            }
-                                                      }
-                                                      return [false, "red"];
-                                                },
-                                          });
-                                    });
-                              </script>
-                        </div>
-
-                        <div class="col-md-4">
                               <label id="lbl_from_date" for="ot_from_date" class="form-label">From Date</label>
-                              <input type="text" class="form-control" id="ot_from_date" value="<?=$otFrDate?>" onchange="time_validator()" autocomplete="off"> 
+                              <input type="text" class="form-control" id="ot_from_date" value="<?=$otFrDate?>" onchange="getRegularSched()" autocomplete="off"> 
                               <script>
                                     $(document).ready(function () {
                                           var disabledArr = <?=json_encode($kiosklocked['rows'])?>; 
@@ -373,7 +293,7 @@
 
                         <div class="col-md-4"> 
                               <label id="lbl_to_date" for="ot_to_date" class="form-label">To Date</label>
-                              <input type="text" class="form-control" id="ot_to_date" value="<?=$otToDate?>"  onchange="time_validator()" autocomplete="off"> 
+                              <input type="text" class="form-control" id="ot_to_date" value="<?=$otToDate?>"  onchange="getRegularSched()" autocomplete="off"> 
                               <script>
                               $(document).ready(function (){
                               var disabledArr = <?=json_encode($kiosklocked['rows'])?>;  
@@ -404,210 +324,41 @@
                               });
                               </script>
 
-                        </div> 
+                        </div>  
                   </div>
-            </div> -->
+            </div>
+
+  
+            <div class="col-12" id="divExtensionAllowanceDetails"></div>
+            <div class="col-12 mt-3" id="divFormsAttachmentsFiles"></div>
+
 
             <div class="col-12">
-                  <div class="row"> 
-                        <div class="col-md-4">
-                              <label id="lblregSched" for="regSched" class="form-label">Regular Schedule</label>
-                              <input class="form-control" type="text" id="regSched" value="<?= $otExtAllowDetails['regSched'] ?? "" ?>" readonly>
-                        </div>
-
-                        <div class="col-md-2">
-                              <label id="lblactTimeIn" for="actTimeIn" class="form-label">Time In</label>
-                              <input class="form-control" type="text" id="actTimeIn"  value="<?= $otExtAllowDetails['actTimeIn'] ?? "" ?>" readonly>
-                        </div>
-
-                        <div class="col-md-2">
-                              <label id="lblactTimeOut" for="actTimeOut" class="form-label">TIme Out</label>
-                              <input class="form-control" type="text" id="actTimeOut"  value="<?= $otExtAllowDetails['actTimeOut'] ?? "" ?>" readonly>
-                        </div> 
-
-                        <div class="col-md-2">
-                              <label id="lbl_appAllHrs" for="appAllHrs" class="form-label">Total Time</label>
-                              <input type="text" class="form-control" id="appAllHrs" value="<?= $otExtAllowDetails['totalTime'] ?? "" ?>" maxlength="5" readonly> 
-                        </div>
-
-                        <div class="col-md-2">
-                              <label id="lbl_appTotalTime" for="appTotalTime" class="form-label">Total OT</label>
-                              <input type="text" class="form-control" id="appTotalTime" value="<?= $otExtAllowDetails['otTotal'] ?? "" ?>" maxlength="5" readonly> 
-                        </div> 
+                  <label id="lbl_txtRemarks" for="txtRemarks" class="form-label">Reason</label>
+                  <input type="text" id="txtRemarks" class="form-control" value="<?=$reason?>" maxlength="200">
+                  <div class="counter">
+                  <span id="current">0</span> / 200
                   </div>
-            </div>
+            </div>  
  
-            <!-- <div class="col-md-3">
-                  <label id="lbl_otTimeFrom" for="otTimeFrom" class="form-label">From Time</label>
-                  <div style="position: relative;">
-                        <input type="text" id="otTimeFrom" value="<?= $otTimeFrom ?>" class="form-control" autocomplete="off" onchange="return time_validator()" onkeyup="filterTime(this.id,'autocomplete1')"/>
-                        <div id="autocomplete1" style="display: none;" class="customizedAutoComplete" ></div>
-                  </div> 
-            </div>
-
-            <div class="col-md-3">
-                  <label id="lbl_otTimeTo" for="otTimeTo" class="form-label">To Time</label>
-                  <div style="position: relative;">
-                        <input type="text" id="otTimeTo" value="<?= $otTimeTo ?>" class="form-control" autocomplete="off"  onchange="return time_validator()"  onkeyup="filterTime(this.id,'autocomplete2')"/>
-                        <div id="autocomplete2" style="display: none;" class="customizedAutoComplete" ></div>
-                  </div> 
-            </div>
-   
- 
-            <div class="col-md-3">
-                  <label id="lbl_tot_break" for="tot_break" class="form-label">Total No. of Break Time</label>
-                  <input type="text" value="<?=$otBreak?>" class="form-control" id="tot_break" onchange="return time_validator()" placeholder="HH:MM" maxlength="5">
-            </div> 
-
-            <div class="col-md-3">
-                  <label id="lbl_appTotalTime" for="appTotalTime" class="form-label">Total Time</label>
-                  <input type="text" class="form-control" id="appTotalTime" value="<?=$otTotHours?>" maxlength="5" readonly> 
-            </div> -->
-            
-            <div class="col-md-4">
-                  <label id="lbltxtTotalAllowance" for="txtTotalAllowance" class="form-label">Estimated Allowance</label>
-                  <textarea id="txtTotalAllowance" style="resize: none;" class="form-control" disabled><?= $otExtAllowDetails['totalAllowance'] ?? "00.0" ?></textarea> 
-            </div>
-            <div class="col-md-8">
-                  <label id="lbl_txtRemarks" for="txtRemarks" class="form-label">OT Remarks</label>&nbsp;&nbsp;<div style="display: inline-block;" class="counter"><span id="current">0</span> / 200</div> 
-                   <textarea id="txtRemarks" class="form-control" maxlength="200"><?=$otRemarks?></textarea>
-                  
-            </div>
-            
-            <div class="col-md-12"> 
-                        <div class="form-control p-3">
-                              <label id="lblfileInput" for="fileInput" class="form-label"> Supporting Attachment (Optional)</label><span> <i>Format Allowed : jpg/jpeg/png/webp/pdf Maximum file size (5MB) only</i> </span><br>
-                              
-                              <?php  $newAttacheStyle = ""; ?>
-                              <div id="attFiles">
-                                    @if($otExtAllowDetails['attachmentFilType'] ?? 0)
-                                          <?php  $newAttacheStyle = "display:none"; ?>
-                                          <div class="attachmentCont" id="existAttachments">
-                                                <span class="remove-attachment" title="Remove attachment" onclick="return updateAttachment(0)">&times;</span>
-                                                @if($otExtAllowDetails['isImage']==1)
-                                                      <img src="{{ $otExtAllowDetails['attachmentContent'] }}" alt="Image">
-                                                @else 
-                                                <a href="{{ $otExtAllowDetails['attachmentContent']}}" target="_blank" rel="noopener noreferrer">
-                                                      <i class="fa-regular fa-file-pdf text-danger fs-1"></i> <br> {{ $otExtAllowDetails['attachmentFileName'] }}
-                                                </a> 
-                                                @endif 
-                                                <!-- <i class="fa-solid fa-pen-to-square"  onclick="return updateAttachment(1)"></i>  -->
-                                          </div>    
-                                    @endif 
-                              </div>
-                              <div id="newAttachment"  class="attachmentCont" style="{{$newAttacheStyle}}">
-                                    <div onclick="return updateAttachment(1)">
-                                          <i class="fas fa-paperclip fs-1 text-info"></i> 
-                                    </div><br>
-                                    Add Attachment.
-                              </div>
-                               
-                              <input type="file" class="form-control" id="fileInput" accept=".jpg,.jpeg,.png,.webp,.pdf" onchange="return pickSingleAttachment(this)" hidden>  
-
-                              <script>
-                                    function updateAttachment(mode){
-                                          
-                                          if(mode==0){ // REMOVE
-                                               if(confirm('Are you sure, you want to remove this attachment?')){
-                                                      this.attachmentContent = "";
-                                                      this.attachmentFileName = "";
-                                                      this.attachmentFilType = "";
-                                                      var attFiles =  document.getElementById('attFiles');
-                                                      var newAttachment =  document.getElementById('newAttachment');
-                                                      attFiles.innerHTML = `<div class="attachmentCont">`+newAttachment.innerHTML+`</div>`;
-                                               }
-                                          }    
-                                          
-                                          if(mode==1){
-                                                var fileInput = document.getElementById('fileInput');
-                                                fileInput.click();
-                                          }
-                                    }
-
-                                    
-                              </script>
-
-                        </div>
-
-                        <script>
-                              async function  pickSingleAttachment(fileInput) {
-                                    const newAttachment = document.getElementById('newAttachment');
-                                    const attFiles = document.getElementById('attFiles');
-                                    const fileDetails = fileInput.files[0];
-                                    const filename = fileDetails.name;
-                                    const fileType = ((fileDetails.type).replace('image/','')).replace('application/','');
-                                    const fileSize = fileDetails.size;
-                                    const imageFiles = ["jpg","jpeg","png","webp"];
-                                    var isImage = imageFiles.some(item => item === fileType) ? true : false;
-                                     
-                                    if (fileSize>5242880){
-                                          this.attachmentContent = "";
-                                          this.attachmentFileName = "";
-                                          this.attachmentFilType = "";
-
-                                          show_error_message('lblfileInput',filename+' File size to large!');  
-                                          fileInput.value = "";
-                                          return;
-                                    } 
-                                   
-                                       var base64 =  await encodeImageToBase64(fileDetails);
-                                       this.attachmentContent = base64;
-                                       this.attachmentFileName = filename;
-                                       this.attachmentFilType = fileType;  
-                                       
-                                       const pdfAttachment = `<span class="remove-attachment" title="Remove attachment" onclick="return updateAttachment(0)">&times;</span> 
-                                                <i class="fa-regular fa-file-pdf text-danger fs-1"></i> <br> `+filename+` 
-                                          </a>`;
-
-                                       const imageAttachment =`<div class="attachmentCont"><span class="remove-attachment" title="Remove attachment" onclick="return updateAttachment(0)">&times;</span>
-                                                               <img src="`+ await encodeImageToBase64(fileDetails) +`">
-                                                               </div>`;
-                                       const finalAttachment = (isImage) ? imageAttachment : pdfAttachment;
-
-                                       attFiles.innerHTML =  finalAttachment;
-                                       newAttachment.style.display = "none";
-                                   
-                              }
-
-                              async function encodeImageToBase64(file){ 
-                                    return new Promise((resolve, reject) => {
-                                          const reader = new FileReader();
-
-                                          reader.onload = () => resolve(reader.result);
-                                          reader.onerror = reject;
-
-                                          reader.readAsDataURL(file);
-                                    });
-                              }
-                        </script>
-                         
-                  </div>
+             
 
             <div class="col-md-12" id="divWizard"></div>
 
-            <div class="col-12">
-                  <div class="form-check d-flex justify-content-between">  
-                        <div>
-                              <input class="form-check-input" type="checkbox" id="verification_checkbox">
-                              <label id="verification_checkbox_lbl" class="form-check-label" for="verification_checkbox">
-                                    I verify that all the information above is correct.
-                              </label>
-                        </div>
-                        <div hidden>
-                              <input type="checkbox" id="checkboxTtExtAllowance" <?=($otExtAllowance==0) ? "" : "checked"?> >
-                              <label for="checkboxTtExtAllowance" id="lblCheckboxTtExtAllowance">Extension Allowance</label>
-                        </div>
-                  </div>
+            <div class="col-12"> 
+                  <div>
+                        <input class="form-check-input" type="checkbox" id="verification_checkbox">
+                        <label id="verification_checkbox_lbl" class="form-check-label" for="verification_checkbox">
+                              I verify that all the information above is correct.
+                        </label>
+                  </div>  
             </div>
       </form>
 </div>
 <script>
- 
-      
+  
 
-      loadTimeSelection('autocomplete1','otTimeFrom','<?=$otTimeFrom?>');
-      loadTimeSelection('autocomplete2','otTimeTo','<?=$otTimeTo?>');
-
+       
       var totalAllowance = 0;
 
       function time_converter(num){
@@ -656,7 +407,7 @@
             getEstimatedAllowance(totalTime);
       }
 
-     async function  getEstimatedAllowance(val) {
+      async function  getEstimatedAllowance(val) {
  
             var username = '<?= session()->get('username') ?>';
             var details = {
@@ -684,45 +435,26 @@
                document.getElementById('txtTotalAllowance').value = '₱'+total;
 
             }
-     }
-     
-     async function  getRegularSched(val) {
- 
-            //const result =  await call_route(formData, baseUrl+'/overtimeExtMapping'); 
+      }
 
-            var username = '<?= session()->get('username') ?>';
+      async function  getRegularSched() { 
+
             var details = {
-                  "username" : username,
-                  "date" : val,
-            } 
-            var formData = new FormData();
-            formData.append('mode', 1);   
-            formData.append('details', JSON.stringify(details));   
-
-            const response = await exec_XMLHttpRequest(formData,'{{url("/overtimeExtMapping")}}');  
-
-            setTimeout(() => {
-                  addAuditTrails(window.location.pathname.split('/').pop(),JSON.stringify(response));
-                  GlovalHTMLObjLoading(0,objID); 
-            }, maxMinExec);  
-
-            if (response.num!==0){
-                 fillReqSechedDetails('','','','','','');
-            }else{
-
-                 const rslt = response.rows[0];
-                 this.regSched = rslt.regSched;
-                 this.dtrIn = rslt.dtrIn;
-                 this.dtrOut = rslt.dtrOut; 
-                 this.totalTime = rslt.totalTime; 
-                 this.otTotal = rslt.otTotal; 
-                 this.allHrs = rslt.allHrs; 
-                 fillReqSechedDetails(regSched,dtrIn,dtrOut,totalTime,otTotal,allHrs);
+                  "appNo" : 0,
+                  "username" : '<?= session()->get('identityId') ?>',
+                  "df" : document.getElementById('ot_from_date').value,
+                  "dt" : document.getElementById('ot_to_date').value,
+            }  
+            var container = document.getElementById('divExtensionAllowanceDetails');
+            var formData = new FormData();   
+            formData.append('mode',0);    
+            formData.append('details',JSON.stringify(details));       
+            GlovalHTMLObjLoading(1,'divExtensionAllowanceDetails');
+            var response = await call_page_into_div(formData,'{{url("/overtimeExtMapping")}}',container);  
+      }
  
-            }
-     }
-
-     function fillReqSechedDetails(regSched,dtrIn,dtrOut,totalTime,otTotal,allHrs){ 
+ 
+      function fillReqSechedDetails(regSched,dtrIn,dtrOut,totalTime,otTotal,allHrs){ 
             document.getElementById('regSched').value = regSched;
             document.getElementById('actTimeIn').value = dtrIn;
             document.getElementById('actTimeOut').value = dtrOut;
@@ -730,7 +462,7 @@
             document.getElementById('txtTotalAllowance').value = otTotal;
             document.getElementById('appAllHrs').value = allHrs;
             
-     }
+      }
 
 
       function formatToTime(input) {
@@ -768,8 +500,7 @@
 
             return "00:00";
       }
-
-
+ 
 
       function timeToMinutes(timeStr) {
             const [hours, minutes] = timeStr.split(':').map(Number);
@@ -785,7 +516,7 @@
    
       var formData = new FormData(); 
       formData.append('switch',1000);
-      formData.append('appNo','<?=$opAppNo?>'); 
+      formData.append('appNo','<?=$otAppNo?>'); 
       formData.append('r_opt',JSON.stringify({"srcDB":'<?= $r_srcDb ?>'}));  
       LoadPage('{{url("/wizard")}}','divWizard',formData); 
    
@@ -798,8 +529,11 @@
       var maxLength = textarea.getAttribute('maxlength');
 
       textarea.addEventListener('input', () => {
-      current.textContent = textarea.value.length;
+            current.textContent = textarea.value.length;
       });
 
- 
+      getRegularSched();
+
+      loadAttachmentsAssets(1,'<?= json_encode($attachedFiles['rows'][0]->files ?? []) ?>');
+
 </script>
