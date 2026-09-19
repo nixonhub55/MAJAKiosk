@@ -31,7 +31,7 @@
       $df = date('Y-m-d', strtotime("-1 Month")); 
       $dt = date('Y-m-d');  
       $btnId = 0; 
- 
+      //echo json_encode($pending_list);
 ?>
 <div id="divExec"></div>
 <div class="container-fluid mt-4 card-container"> 

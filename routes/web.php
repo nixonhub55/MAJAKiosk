@@ -17,14 +17,15 @@ use App\Http\Controllers\DashboardController;
 // Route to display the login form
 Route::match(['get', 'post'], '/', [Traffic::class, 'showLoginForm'])->name('login'); 
 
-Route::get('/test-url', function () {
-    return [
-        'app_url' => config('app.url'),
-        'login_url' => route('login'),
-        'url' => url('/'),
-        'asset_url' => config('app.asset_url'),
-    ];
+Route::get('/__which_app', function () {
+    return response()->json([
+        'app' => config('app.name'),
+        'cookie' => config('session.cookie'),
+        'domain' => config('session.domain'),
+        'base_path' => base_path(),
+    ]);
 });
+
 
 Route::match(['get', 'post'], 'saveSystemErrors', [Traffic::class, 'saveSystemErrors'])->name('saveSystemErrors');  
 Route::match(['get', 'post'], 'saveSystemErrorList', [Traffic::class, 'saveSystemErrorList'])->name('saveSystemErrorList'); 

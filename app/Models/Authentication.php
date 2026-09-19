@@ -205,7 +205,7 @@ class Authentication extends Model
 
             $database = Session::get('database');
             DB::purge('mysql');
-            config(['database.connections.mysql.database' => $database]);
+            config(['database.connections.mysql.database' => $database]); 
 
             $param_count = "";
             foreach ($spParams as $param) {
@@ -712,6 +712,7 @@ class Authentication extends Model
 
          if(env('APP_ENV')=="local"){ // avoid mailing into correct receiver
             $data_request['sendTo'] = "onnix2559@gmail.com";
+            //$data_request['sendTo'] = "pahogoy197@airychen.com";
          }
 
          $start  = microtime(true);
@@ -808,7 +809,7 @@ class Authentication extends Model
         $header = $data_request->input('header')[0] ?? ""; 
         $content = $data_request->input('content')[0] ?? ""; 
         $this->sp_email_hist([0,$companyPasswordSettings['kioskEmail'],$sendTo,$header,$content,$companyPasswordSettings['protocol'],$companyPasswordSettings['smtpHost'],$status,substr($errorMessage, 0, 500)]);         
-        $this->sp_userAuditTrails(1,'Send Email',$status,$data['subject'],$start); 
+        $this->sp_userAuditTrails(1,'Send Email',$status,$data['subject']." send to ".json_encode($data_request->input('sendTo')),$start); 
         return $errorMessage;
         return $num; 
    }

@@ -470,7 +470,7 @@ foreach ($access_rights['rows'] as $rows) {
                                     </a> -->
                               @endif
  
-                              @if($overtime == 1 && session()->get('batchId')=="OFR" && $username=="")
+                              @if($overtime == 1 && session()->get('batchId')=="OFR")
                                     <a class="nav-link {{ request()->is(patterns: 'overtimeExt_application') ? 'active-tab' : '' }}"
                                           href='{{url("/overtimeExt_application")}}'>
                                           <div class="sb-nav-link-icon"> <i class="bi bi-clock-fill"></i></div>Extension Allowance  

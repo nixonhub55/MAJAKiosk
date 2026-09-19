@@ -1,6 +1,11 @@
  
     <?php 
         $baseRul = session()->get('baseRul'); 
+
+        /* echo '<center>
+                <i class="fas fa-exclamation-triangle fs-5 text-warning"></i> </br> Facility temporary unable. will be right back, thank you.
+              </center>'; 
+        return; */
     ?>
 
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>

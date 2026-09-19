@@ -113,7 +113,7 @@
                         @if($otExtAllowance==1)
                               <div class="col-12 mb-3">
                                     <div class="alert alert-warning" role="alert">
-                                          <i class="fas fa-exclamation-triangle"></i> This application requesting for <b>Extension Allowance</b>
+                                          <i class="fas fa-exclamation-triangle"></i> This application is requesting for <b>Extension Allowance</b>
                                     </div>
                               </div>
                         @endif

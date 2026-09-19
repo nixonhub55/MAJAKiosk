@@ -101,7 +101,7 @@
                                     <td>{{$rows->r_status}}</td>
                                    <td>
                                     <div class="btn-container">
-                                          <button class="btn btn-action btn-edit" title="Edit" onclick="Edit_SC('{{$rows->enc_id}}')"><i
+                                          <button class="btn btn-action btn-edit" title="Edit" onclick="Edit_SC('{{$rows->enc_id}}','{{$rows->r_srcDb}}')"><i
                                                       class="fas fa-edit"></i></button>
                                           <button class="btn btn-action btn-delete" title="Delete"  onclick="Delete_SC('{{$rows->enc_id}}','{{$rows->scAppNo}}')"><i
                                                       class="fas fa-trash"></i></button> 
@@ -156,7 +156,7 @@
 
 
       var this_mode = 0;
-      var selectedID=""; 
+      var selectedID="",selectedDB = ""; 
 
       function populateTimeDropdown(selectId, selectedTime = null) {
             const selectElement = document.getElementById(selectId); 
@@ -195,7 +195,8 @@
             });
       }); 
 
-      function Edit_SC(num){
+      function Edit_SC(num,r_srcDb){
+            this.selectedDB=r_srcDb;
             show_sc_form(num);
       }
 
@@ -267,7 +268,9 @@
       function show_sc_form(id){     
             this.selectedID=id; 
             var formData = new FormData();
-            formData.append('id', id);    
+            formData.append('id', id);
+            formData.append('r_opt',JSON.stringify({"srcDB":selectedDB}));
+
             var myModal = new bootstrap.Modal(document.getElementById('scModal'));   
             var csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
             $.ajax({

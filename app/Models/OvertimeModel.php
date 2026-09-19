@@ -163,7 +163,7 @@ class OvertimeModel extends Model
            
             $fullname=session()->get('fullname');
             $identityId = session()->get('identityId');
-            $approver1 = $this->authentication->sp_approval_get_authorizer([0, 1, $identityId,0,0]);
+            $approver1 = $this->authentication->sp_approval_get_authorizer([0, 1, $identityId,0,0,session()->get('database')]);
             $sendTo = array_column($approver1['rows'], 'emailAddress');  
 
             $email['subject']="Kiosk Update Overtime Request Pending Approval";

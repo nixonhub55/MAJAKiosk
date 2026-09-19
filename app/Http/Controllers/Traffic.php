@@ -395,11 +395,11 @@ class Traffic extends Controller
            $Newemail['sendTo']=$email; 
            $Newemail['CcTo']=[]; 
            $Newemail['header']=["Dear ".$fullname]; 
-           $Newemail['content']=["Please use this OTP <b><u>".$NewOTP['OTP']."</u></b> for changes password verefication. 
+           $Newemail['content']=["Please use this OTP <b><u>".$NewOTP['OTP']."</u></b> for changes password verification. 
                                 </br> Reference No.".$NewOTP['RefNo']."</br>
                                 </br>Please don't share this</br>
                                 "]; 
-           $Newemail['footer']=["<b style='color:red'>Note</b>:<i>We cannot recieve your reply here. Thank you!</i>"]; 
+           $Newemail['footer']=["<b style='color:red'>Note</b>:<i>We cannot receive your reply here. Thank you!</i>"]; 
            
            $IsEmailSuccess = $this->authentication->sendEmail(new Request($Newemail));   
            
@@ -585,14 +585,15 @@ class Traffic extends Controller
         $email['CcTo']=[]; 
         $email['header']=["Hi Ma'am/Sir"]; 
         $email['content']=["<b>Time Entry"]; 
-        $email['footer']=["<b style='color:red'>Note</b>:<i>We cannot recieve your reply here. Thank you!</i>"]; 
+        $email['footer']=["<b style='color:red'>Note</b>:<i>We cannot receive your reply here. Thank you!</i>"]; 
 
         $emailResult = $this->authentication->sendEmail(new Request($email)); 
         echo json_encode($emailResult);
         return; */
 
 
-        return view('layouts.embed.test');
+        //return view('layouts.embed.test');
+        phpinfo();
     } 
 
     public function compensationAndBenefits(){
@@ -811,7 +812,9 @@ class Traffic extends Controller
     }
 
 
-    public function showLoginForm(Request $request){   
+    public function showLoginForm(Request $request){  
+        
+       
          
         $SESSION_COOKIE = env('SESSION_COOKIE'); 
         foreach ($_COOKIE as $name => $value) { // Temporary Solution for across session
@@ -1955,13 +1958,13 @@ class Traffic extends Controller
             $txtReject = $_POST['txtReject']; 
             $decision = ($val=="1") ? "<b style='color:green'>Approved</b>" : "<b style='color:red'>Rejected</b>";
 
+             
+            // APPROVE=1  REJECT=0 
+            $submit_response = $this->authentication->sp_for_approval_response([$database,$pint_mode, $switch, $id, $identityId, $val, $txtReject]);
+
             $applicationMovement = $this->authentication->sp_application_movement([0,$switch,$id,$_POST['database'],$_POST['r_Opt'] ?? '']);
             $secondApprover = current(array_filter($applicationMovement['rows'], fn($row) => (int)$row->isNextApprover === 1)) ?? null;
             
-            
-            // APPROVE=1  REJECT=0 
-            $submit_response = $this->authentication->sp_for_approval_response([$database,$pint_mode, $switch, $id, $identityId, $val, $txtReject]);
- 
         
             if ($pint_mode==1){
   
@@ -1972,9 +1975,11 @@ class Traffic extends Controller
                 if (!empty($secondApprover) && $val=="1") { 
                     
                     $fullname=session()->get('fullname');  
-                    $sendTo = $applicationMovement['rows'][0]->emailAddress;      
-                    $approverName = $secondApprover->approverName;      
-                  
+                    $sendTo = $applicationMovement['rows'][0]->emailAddress; 
+                    
+                    $authDetails = json_decode($secondApprover->authDetails,true);
+                    $approverName = implode(' & ', array_column($authDetails, 'approverName'));   
+                    
                     
                     $email['subject']="Kiosk Update: Your ".$appName." Request # [".$id."]";
                     $currentUrl = session()->get('currentUrl');
@@ -1990,14 +1995,33 @@ class Traffic extends Controller
                                         To review and take action on this request, please click the link below:<br>
                                         <i style='color:blue'><u>".$currentUrl."</u></i>
                                         "]; 
-                    $email['footer']=["<b style='color:red'>Note</b>:<i>We cannot recieve your reply here. Thank you!</i>"]; 
+                    $email['footer']=["<b style='color:red'>Note</b>:<i>We cannot receive your reply here. Thank you!</i>"]; 
 
                     $this->authentication->sendEmail(new Request($email)); 
                       
-                   /*  $data['num'] = 0; $data['msg'] = json_encode($email);
-                    return $data; */
+                    $fullname= $applicationMovement['rows'][0]->fullName;
+                    foreach ($authDetails as $row) {
+                        //echo json_encode($row['emailAddress']);
+                        $email['subject']="Kiosk Update ".$appName." Request Pending Approval";
+                        $currentUrl = session()->get('currentUrl');
+                            
+                        $email['sendTo']=$row['emailAddress'];
+                        $email['CcTo']=[]; 
+                        $email['header']=["Hi Ma'am/Sir"]; 
+                        $email['content']=["
+                                            You have received a ".$appName." request submitted by ".$fullname.", which is now pending your review and approval. 
+                                            </br></br>
+                                            Application #:".$id.".
+                                            </br></br>
+                                            To review and take action on this request, please click the link below:<br>
+                                            <i style='color:blue'><u>".$currentUrl."</u></i>
+                                            "]; 
+                        $email['footer']=["<b style='color:red'>Note</b>:<i>We cannot receive your reply here. Thank you!</i>"];  
+                        $this->authentication->sendEmail(new Request($email));
+                    }
+ 
 
-                    $fullname= $applicationMovement['rows'][0]->fullName;      
+                   /*  $fullname= $applicationMovement['rows'][0]->fullName;      
                     $sendTo =  $secondApprover->approverEmail;
                     
                      
@@ -2015,8 +2039,8 @@ class Traffic extends Controller
                                         To review and take action on this request, please click the link below:<br>
                                         <i style='color:blue'><u>".$currentUrl."</u></i>
                                         "]; 
-                    $email['footer']=["<b style='color:red'>Note</b>:<i>We cannot recieve your reply here. Thank you!</i>"];  
-                    $this->authentication->sendEmail(new Request($email)); 
+                    $email['footer']=["<b style='color:red'>Note</b>:<i>We cannot receive your reply here. Thank you!</i>"];  
+                    $this->authentication->sendEmail(new Request($email));  */
 
                 } else{
 
@@ -2029,7 +2053,7 @@ class Traffic extends Controller
                         $email['CcTo']=[]; 
                         $email['header']=["Dear ".$fullname]; 
                         $email['content']=["We want to <b style='color:green'>congratulate</b> you about your request for ".$appName." with application#:".$id." has been now <b style='color:green'>approved</b> by <b>".session()->get('fullname')."</b>. </br>kindly check this into our portal."]; 
-                        $email['footer']=["<b style='color:red'>Note</b>:<i>We cannot recieve your reply here. Thank you!</i>"]; 
+                        $email['footer']=["<b style='color:red'>Note</b>:<i>We cannot receive your reply here. Thank you!</i>"]; 
                         $this->authentication->sendEmail(new Request($email)); 
 
                     }else{
@@ -2050,7 +2074,7 @@ class Traffic extends Controller
                                             To review and take action on this request, please click the link below:<br>
                                             <i style='color:blue'><u>".$currentUrl."</u></i>
                                             "]; 
-                        $email['footer']=["<b style='color:red'>Note</b>:<i>We cannot recieve your reply here. Thank you!</i>"]; 
+                        $email['footer']=["<b style='color:red'>Note</b>:<i>We cannot receive your reply here. Thank you!</i>"]; 
 
                         $this->authentication->sendEmail(new Request($email)); 
 
@@ -2173,13 +2197,12 @@ class Traffic extends Controller
 
                 $fullname=session()->get('fullname');  
                 $sendTo = $applicationMovement['rows'][0]->emailAddress;      
-                $approverName = $secondApprover->approverName;    
+                 
+                $authDetails = json_decode($secondApprover->authDetails,true);
+                $approverName = implode(' & ', array_column($authDetails, 'approverName'));   
 
                 if (!empty($secondApprover) && $rCode=="A") { 
-                    
-                      
-                  
-                    
+                     
                     $email['subject']="Kiosk Update: Your ".$appName." Request # [".$id."]";
                     $currentUrl = session()->get('currentUrl');
                         
@@ -2194,14 +2217,32 @@ class Traffic extends Controller
                                         To review and take action on this request, please click the link below:<br>
                                         <i style='color:blue'><u>".$currentUrl."</u></i>
                                         "]; 
-                    $email['footer']=["<b style='color:red'>Note</b>:<i>We cannot recieve your reply here. Thank you!</i>"]; 
+                    $email['footer']=["<b style='color:red'>Note</b>:<i>We cannot receive your reply here. Thank you!</i>"]; 
 
                     $this->authentication->sendEmail(new Request($email)); 
                       
-                   /*  $data['num'] = 0; $data['msg'] = json_encode($email);
-                    return $data; */
+                    $fullname= $applicationMovement['rows'][0]->fullName;
+                    foreach ($authDetails as $row) {
+                        //echo json_encode($row['emailAddress']);
+                        $email['subject']="Kiosk Update ".$appName." Request Pending Approval";
+                        $currentUrl = session()->get('currentUrl');
+                            
+                        $email['sendTo']=$row['emailAddress'];
+                        $email['CcTo']=[]; 
+                        $email['header']=["Hi Ma'am/Sir"]; 
+                        $email['content']=["
+                                            You have received a ".$appName." request submitted by ".$fullname.", which is now pending your review and approval. 
+                                            </br></br>
+                                            Application #:".$id.".
+                                            </br></br>
+                                            To review and take action on this request, please click the link below:<br>
+                                            <i style='color:blue'><u>".$currentUrl."</u></i>
+                                            "]; 
+                        $email['footer']=["<b style='color:red'>Note</b>:<i>We cannot receive your reply here. Thank you!</i>"];  
+                        $this->authentication->sendEmail(new Request($email));
+                    }
 
-                    $fullname= $applicationMovement['rows'][0]->fullName;      
+                    /* $fullname= $applicationMovement['rows'][0]->fullName;      
                     $sendTo =  $secondApprover->approverEmail;      
                      
                      
@@ -2219,8 +2260,8 @@ class Traffic extends Controller
                                         To review and take action on this request, please click the link below:<br>
                                         <i style='color:blue'><u>".$currentUrl."</u></i>
                                         "]; 
-                    $email['footer']=["<b style='color:red'>Note</b>:<i>We cannot recieve your reply here. Thank you!</i>"];  
-                    $this->authentication->sendEmail(new Request($email)); 
+                    $email['footer']=["<b style='color:red'>Note</b>:<i>We cannot receive your reply here. Thank you!</i>"];  
+                    $this->authentication->sendEmail(new Request($email));  */
                     
                 }else{
                     
@@ -2232,7 +2273,7 @@ class Traffic extends Controller
                         $email['CcTo']=[]; 
                         $email['header']=["Dear ".$fullname]; 
                         $email['content']=["We want to <b style='color:green'>congratulate</b> you about your request for ".$appName." with application#:".$id." has been now <b style='color:green'>approved</b> by <b>".session()->get('fullname')."</b>. </br>kindly check this into our portal."]; 
-                        $email['footer']=["<b style='color:red'>Note</b>:<i>We cannot recieve your reply here. Thank you!</i>"]; 
+                        $email['footer']=["<b style='color:red'>Note</b>:<i>We cannot receive your reply here. Thank you!</i>"]; 
                         $this->authentication->sendEmail(new Request($email)); 
 
                     }else{
@@ -2253,7 +2294,7 @@ class Traffic extends Controller
                                             To review and take action on this request, please click the link below:<br>
                                             <i style='color:blue'><u>".$currentUrl."</u></i>
                                             "]; 
-                        $email['footer']=["<b style='color:red'>Note</b>:<i>We cannot recieve your reply here. Thank you!</i>"]; 
+                        $email['footer']=["<b style='color:red'>Note</b>:<i>We cannot receive your reply here. Thank you!</i>"]; 
 
                         $this->authentication->sendEmail(new Request($email)); 
 
@@ -3503,11 +3544,11 @@ class Traffic extends Controller
         $Newemail['sendTo']=$emailAddress; 
         $Newemail['CcTo']=[]; 
         $Newemail['header']=["Dear User"]; 
-        $Newemail['content']=["Please use this OTP <b><u>".$OTP."</u></b> for user password verefication. 
+        $Newemail['content']=["Please use this OTP <b><u>".$OTP."</u></b> for user password verification. 
                             </br> Reference No.".$RefNo."</br>
                             </br>Please don't share this</br>
                             "]; 
-        $Newemail['footer']=["<b style='color:red'>Note</b>:<i>We cannot recieve your reply here. Thank you!</i>"]; 
+        $Newemail['footer']=["<b style='color:red'>Note</b>:<i>We cannot receive your reply here. Thank you!</i>"]; 
         
         $IsEmailSuccess = $this->authentication->sendEmail(new Request($Newemail));   
         
@@ -3535,7 +3576,6 @@ class Traffic extends Controller
   
     //login post
     public function login(Request $request){  
- 
   
             $start  = microtime(true);
            
@@ -3554,9 +3594,13 @@ class Traffic extends Controller
             $username = $request->input('username');
             $password = $request->input('password');
             $database = $request->input('database');
+            
+            
 
+            $setupIncomplete = $this->authentication->sp_kiosk_lookups([0]); 
+            
+            //echo "MJCI"; return;
 
-            $setupIncomplete = $this->authentication->sp_kiosk_lookups([0]);  
             if(!empty($setupIncomplete['rows'][0]->error_msg)){  
                 echo '<div style="background-color: #FA555A; padding:20px; color:white;width:500px">
                     <h1>Dear, Pay Factor Team</h1>
@@ -3574,6 +3618,8 @@ class Traffic extends Controller
             DB::purge('mysql');
             config(['database.connections.mysql.database' => $database]);
             DB::reconnect('mysql');
+
+             
 
             //if password not encrypted or new registered using bulk upload
             $userdetails = $this->authentication->authenticate_account_per_user($username);
@@ -3627,6 +3673,7 @@ class Traffic extends Controller
             $default_mailer['rows'][0]->smtp_pass = $this->authentication->f_endecrypt($default_mailer['rows'][0]->smtp_pass, 'd', 'ftsi');
             session()->put('default_mailer', value: $default_mailer['rows'][0]);
             
+             
             
             $data['authenticate'] = $this->authentication->authenticate_account($username, $e_password);
             $data['user_exists'] = $this->authentication->check_if_username_exists($username);
@@ -3800,6 +3847,7 @@ class Traffic extends Controller
 
 
                            $this->authentication->sp_userAuditTrails(1,'Login','Success','',$start); 
+                            
                            return $this->goto_Dashboard();
                         } 
                         //return redirect()->route('dash_cust');         

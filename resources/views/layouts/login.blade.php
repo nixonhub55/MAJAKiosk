@@ -5,6 +5,7 @@ use PhpParser\Node\Stmt\Echo_;
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type,x-prototype-version,x-requested-with');
+ 
 ?> 
 
 
@@ -91,6 +92,15 @@ header('Access-Control-Allow-Headers: Content-Type,x-prototype-version,x-request
      $targetTime = "2025-02-26 10:03:18";   
      $targetTimestamp = strtotime($targetTime);  
      $companyLogoBlob = str_replace("MAJAKiosk","",str_replace("/kiosk","",env('APP_URL'))."assets/img/".env('DEFAULT_LOGO'));  
+
+    $user = "";
+    $pass = "";
+
+    if (env('APP_ENV')=="local"){
+        $user = "123123";
+        $pass = "12312";
+    }
+
     ?>
 <body>
 
@@ -101,7 +111,7 @@ header('Access-Control-Allow-Headers: Content-Type,x-prototype-version,x-request
             @if (session('captcha') ==1)
                 <div class="alert alert-danger text-center" id="alert-danger">Invalid Captcha Code.</div>
             @endif 
-            @csrf
+            @csrf 
             <!-- left box -->
             <div class="col-md-6 rounded-4 d-flex justify-content-center align-items-center flex-column left-box">
                 <div class="featured-image mb-3">
@@ -145,11 +155,11 @@ header('Access-Control-Allow-Headers: Content-Type,x-prototype-version,x-request
                                 @endif 
 
                                 <div class="input-group mb-3">
-                                    <input type="text" name="username" class="form-control form-control-lg bg-light fs-6"
+                                    <input type="text" name="username" class="form-control form-control-lg bg-light fs-6" value="{{$user}}"
                                         placeholder="Username" required>
                                 </div> 
                                 <div class="input-group mb-3 form-control" style="display:flex; justify-content:flex-start;">
-                                    <input type="password" class="txtPass" name="password" onkeyup="return showToggleEye(this.value)" onchange="return showToggleEye(this.value)">
+                                    <input type="password" class="txtPass" name="password" onkeyup="return showToggleEye(this.value)" value="{{$pass}}" onchange="return showToggleEye(this.value)">
                                     <i class="fa-solid fa-eye m-2" style="cursor:pointer;display:none; float:right" id="togglePassword" onclick="return showPass(this)"></i> 
                                 </div>
                             

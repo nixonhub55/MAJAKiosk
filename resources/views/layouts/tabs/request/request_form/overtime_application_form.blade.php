@@ -167,7 +167,7 @@
             $otRemarks=$rows->otReason;
             $otStatus=$rows->otStatus;
             $otExtAllowance=$rows->otExtAllowance;
-      }  
+      }   
 ?>
 <div id="div_validation"></div>
 <div class="container custom-container">
@@ -212,9 +212,13 @@
                         <div class="col-md-4">
                               <label id="lbl_appOvertimeType" for="appOvertimeType" class="form-label">Type</label>
                               <select id="appOvertimeType" class="form-select"> 
-                                    @foreach($ot_types['rows'] as $types)
+                                    @if(session()->get('batchId')!=="OFR")
+                                          <option value="OT">Overtime</option> 
+                                    @endif
+                                    <option value="UT">Under Time</option>
+                                    <!-- @foreach($ot_types['rows'] as $types)
                                     <option  value="{{ $types->val  }}" <?=($otType==$types->val ? "selected" : "") ?>>{{ $types->lbl }}</option>
-                                    @endforeach
+                                    @endforeach -->
                               </select>
                         </div> 
 

@@ -36,7 +36,7 @@
         
         @if($num==2) 
         <p>Step 2:</p>
-        <p> - Enter OTP from your email for verefication with reference No.:<i style='color:red'>{{$RefNo}}</i></p> 
+        <p> - Enter OTP from your email for verification with reference No.:<i style='color:red'>{{$RefNo}}</i></p> 
             <div class="input-group mb-3"> 
                 <input type="text" id="txtOTP" class="form-control form-control-lg bg-light fs-6"
                     placeholder="Enter OTP" value="" required>   
