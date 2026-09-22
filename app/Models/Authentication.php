@@ -683,7 +683,7 @@ class Authentication extends Model
         $email['CcTo']=[]; 
         $email['header']=[$email['sendTo']]; 
         $email['content']=["Payfactor mailer working successfully"]; 
-        $email['footer']=["<b style='color:red'>Note</b>:<i>We cannot recieve your reply here. Thank you!</i>"]; 
+        $email['footer']=["<b style='color:red'>Note</b>:<i>We cannot receive your reply here. Thank you!</i>"]; 
         if($this->sendEmail(new Request($email))){ 
            $cmd['msg'] = "Email successfully sent into ".$email['sendTo'].". kindly check it now!";
         }else{ 
@@ -712,7 +712,7 @@ class Authentication extends Model
 
          if(env('APP_ENV')=="local"){ // avoid mailing into correct receiver
             $data_request['sendTo'] = "onnix2559@gmail.com";
-            //$data_request['sendTo'] = "pahogoy197@airychen.com";
+            //$data_request['sendTo'] = "bohikaj438@airychen.com";
          }
 
          $start  = microtime(true);
@@ -722,7 +722,8 @@ class Authentication extends Model
         
          // Email Notification Management
         $mailNotLocked = "1";  
-        $app = "";  
+        $app = ""; 
+        $app = ((strpos(json_encode($data_request->input('content')), '<b>Extension'))) ? "Overtime" : $app; 
         $app = ((strpos(json_encode($data_request->input('content')), '<b>Overtime'))) ? "Overtime" : $app;
         $app = ((strpos(json_encode($data_request->input('content')), '<b>time adjustment'))) ? "Time Adjustment" : $app;
         $app = ((strpos(json_encode($data_request->input('content')), '<b>Time Entry'))) ? "Time Entry" : $app;
@@ -740,7 +741,7 @@ class Authentication extends Model
                 $mailNotLocked=$rows[$app];
             }
         }  
-        //$data['num'] = 1; $data['msg'] = "hahahah6"; $data['rows'] = [];  return $data; 
+       // $data['num'] = 1; $data['msg'] = $app; $data['rows'] = [];  return $data; 
          
 
         $companyPasswordSettings = session()->get('companyPasswordSettings'); 

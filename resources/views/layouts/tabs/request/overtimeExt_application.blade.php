@@ -181,9 +181,7 @@
       });
 
       
-      async function SubmitRequest(pint_mode,objID) {   
-            
-             
+      async function SubmitRequest(pint_mode,objID) {    
             GlovalHTMLObjLoading(1,objID); 
             document.getElementById('div_validation').innerHTML="";
             var formData = new FormData();
@@ -234,10 +232,10 @@
                   GlovalHTMLObjLoading(0,objID); 
             }else{
                   
-                     //   console.clear();  console.log(response);
-                    //    GlovalHTMLObjLoading(1,objID);  
+                 /*  console.clear();  console.log(response);
+                  GlovalHTMLObjLoading(1,objID);   */
                  
-                window.location.href='{{url("/overtimeExt_application")}}'; 
+              window.location.href='{{url("/overtimeExt_application")}}'; 
             }
       } 
 

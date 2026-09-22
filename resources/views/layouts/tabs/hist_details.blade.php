@@ -925,7 +925,7 @@
                         <div class="row">
                               <div class="col-md-4">
                                     <label for="appEmployeeId" class="form-label">Date Request</label>
-                                    <input type="text" class="form-control" id="appEmployeeId" value="<?=$app_detail->scAppDate?>" readonly>
+                                    <input type="text" class="form-control" id="appEmployeeId" value="<?=$app_detail->scReqDate?>" readonly>
                               </div>
                               <div class="col-md-4">
                                     <label for="appEmployeeName" class="form-label">Previous Schedule</label>

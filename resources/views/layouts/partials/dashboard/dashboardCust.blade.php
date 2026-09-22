@@ -1750,7 +1750,7 @@
     
 
         if (ID<100){ 
-            show_hist_details(ID,enc_id);
+            show_hist_details(ID,enc_id,'<?= session()->get('database') ?>');
         }
        
    }

@@ -53,7 +53,7 @@ class hrdCertModel extends Model
                                 To review and take action on this request, please click the link below:<br>
                                 <i style='color:blue'><u>".$currentUrl."</u></i>
                                 "]; 
-            $email['footer']=["<b style='color:red'>Note</b>:<i>We cannot recieve your reply here. Thank you!</i>"]; 
+            $email['footer']=["<b style='color:red'>Note</b>:<i>We cannot receive your reply here. Thank you!</i>"]; 
 
             $this->authentication->sendEmail(new Request($email)); 
         }
@@ -93,7 +93,7 @@ class hrdCertModel extends Model
             $email['header']=["Hi Ma'am/Sir"]; 
             $email['subject']="Kiosk Update HRD Certificate Request Approval Response";
             $email['content']=["<b style='color:blue'>".$fullname."</b> your request about ".$appName." application#:".$appNo." has been ".$decision." by <b>".session()->get('fullname')."</b>. </br>kindly check this into our portal."]; 
-            $email['footer']=["<b style='color:red'>Note</b>:<i>We cannot recieve your reply here. Thank you!</i>"]; 
+            $email['footer']=["<b style='color:red'>Note</b>:<i>We cannot receive your reply here. Thank you!</i>"]; 
             $email['attachments']=$attachments;
     
     

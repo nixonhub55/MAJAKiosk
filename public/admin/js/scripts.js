@@ -280,7 +280,7 @@ function ForApprovalStatus(appStatus) {
 }
 
 async function show_hist_details(switchNo, appNo,srcDb) { 
-
+    
     num = (switchNo == 1000) ? 0 : switchNo;
     var formData = new FormData();
     formData.append('num', switchNo);

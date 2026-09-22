@@ -213,9 +213,9 @@
                               <label id="lbl_appOvertimeType" for="appOvertimeType" class="form-label">Type</label>
                               <select id="appOvertimeType" class="form-select"> 
                                     @if(session()->get('batchId')!=="OFR")
-                                          <option value="OT">Overtime</option> 
+                                          <option value="OT" <?=($otType=="OT" ? "selected" : "") ?>>Overtime</option> 
                                     @endif
-                                    <option value="UT">Under Time</option>
+                                    <option value="UT" <?=($otType=="UT" ? "selected" : "") ?>>Under Time</option>
                                     <!-- @foreach($ot_types['rows'] as $types)
                                     <option  value="{{ $types->val  }}" <?=($otType==$types->val ? "selected" : "") ?>>{{ $types->lbl }}</option>
                                     @endforeach -->

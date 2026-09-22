@@ -141,7 +141,7 @@ class OvertimeModel extends Model
         return $this->exec_store_proc('sp_portal_overtime_ext_allo_mapping', $spParams);    
 	}  
 
-    public function sp_overtime_submit_request($spParams,$pintMode,$appNo){  
+    public function sp_overtime_submit_request($spParams,$pintMode,$appNo,$otExtAllowance){  
         $start  = microtime(true);
         $str = $this->exec_store_proc('sp_overtime_submit_request', $spParams);   
 
@@ -158,6 +158,11 @@ class OvertimeModel extends Model
                 $this->authentication->sp_userAuditTrails(1,$activity,'info','Validation -> '.$msg,$start); 
             } 
         }
+
+        $appName = "Overtime";
+        if ($otExtAllowance==1){
+            $appName = "Extension Allowance";
+        }
         
         if ($pintMode==1 && $str['num']==0){
            
@@ -166,21 +171,22 @@ class OvertimeModel extends Model
             $approver1 = $this->authentication->sp_approval_get_authorizer([0, 1, $identityId,0,0,session()->get('database')]);
             $sendTo = array_column($approver1['rows'], 'emailAddress');  
 
-            $email['subject']="Kiosk Update Overtime Request Pending Approval";
+            //$email['subject']="Kiosk Update Overtime Request Pending Approval";
+            $email['subject']="Kiosk Update ".$appName." Request Pending Approval";
             $currentUrl = session()->get('currentUrl');
             
             $email['sendTo']=$sendTo;
             $email['CcTo']=[]; 
             $email['header']=["Hi Ma'am/Sir"]; 
             $email['content']=["
-                                You have received a <b>Overtime</b> request submitted by ".$fullname.", which is now pending your review and approval.
+                                You have received a <b>".$appName."</b> request submitted by ".$fullname.", which is now pending your review and approval.
                                 </br></br>
                                 Application #:".$str['msg']."
                                 </br></br>
                                 To review and take action on this request, please click the link below:<br>
                                 <i style='color:blue'><u>".$currentUrl."</u></i>
                                 "]; 
-            $email['footer']=["<b style='color:red'>Note</b>:<i>We cannot recieve your reply here. Thank you!</i>"]; 
+            $email['footer']=["<b style='color:red'>Note</b>:<i>We cannot receive your reply here. Thank you!</i>"]; 
             $this->authentication->sendEmail(new Request($email));
 
         }

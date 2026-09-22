@@ -1726,7 +1726,7 @@ class Traffic extends Controller
             }
  
             $spParams = [$pint_mode, $otAppNo, $empID, $otReason, $ot_type, $ot_location, $ot_date, $ot_from, $ot_to, $ot_tot_break, $ot_time_from, $ot_time_to, $time_tot,$otExtAllowance,$otExtAllowanceDetals,$r_attachedFiles];
-            return $this->overtime_model->sp_overtime_submit_request($spParams, $pint_mode, $otAppNo);
+            return $this->overtime_model->sp_overtime_submit_request($spParams, $pint_mode, $otAppNo,$otExtAllowance);
         }
 
         if ($mode == 2) {  /*delete overtime application*/

@@ -335,7 +335,7 @@
 
             <div class="col-12">
                   <label id="lbl_txtRemarks" for="txtRemarks" class="form-label">Reason</label>
-                  <input type="text" id="txtRemarks" class="form-control" value="<?=$reason?>" maxlength="200">
+                  <input type="text" id="txtRemarks" class="form-control" value="<?=$otRemarks?>" maxlength="200">
                   <div class="counter">
                   <span id="current">0</span> / 200
                   </div>
