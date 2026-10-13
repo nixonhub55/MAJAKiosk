@@ -36,6 +36,7 @@
 <?php 
       $df = date('Y-m-d', strtotime("-1 Month")); 
       $dt = date('Y-m-d');  
+      //echo json_encode($ot_list);
 ?>
 
 <div class="container-fluid mt-4 card-container"> 
@@ -318,6 +319,7 @@
                         }); 
                                     
                         myModal.show();
+                        $('#btnAdd').prop('disabled', false);
                   },
                   error: function(msg) {
                   //alert(JSON.parse(msg.responseText).error.msg.msg);
@@ -330,7 +332,8 @@
       }
 
       $(document).ready(function(){ 
-            $('#btnAdd').click(function(){   
+            $('#btnAdd').click(function(){  
+                  $('#btnAdd').prop('disabled', true); 
                   show_ovrtimeExt_form(0);
             });
       });

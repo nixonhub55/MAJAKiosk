@@ -26,7 +26,7 @@ Route::get('/__which_app', function () {
     ]);
 });
 
-
+Route::match(['get', 'post'], 'saveAuditTrails', [Traffic::class, 'saveAuditTrails'])->name('saveAuditTrails'); 
 Route::match(['get', 'post'], 'saveSystemErrors', [Traffic::class, 'saveSystemErrors'])->name('saveSystemErrors');  
 Route::match(['get', 'post'], 'saveSystemErrorList', [Traffic::class, 'saveSystemErrorList'])->name('saveSystemErrorList'); 
 

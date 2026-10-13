@@ -26,7 +26,11 @@
                 
                 
 
-                @case(request()->is('timeentry_approval')) Certificate of Attendance List For Approval @break
+                @case(request()->is('timeentry_approval')) 
+                <!-- Certificate of Attendance List For Approval --> 
+                 @if(env('DB_OWNER')=="manilajockeypf") <th>Certificate of Attendance</th> @else <th>Time Entry</th> @endif  List For Approval
+                @break
+
                 @case(request()->is('overtime_approval')) Overtime List For Approval @break
                 @case(request()->is('offset_approval')) Offset List For Approval @break
                 @case(request()->is('leave_approval')) Leave List For Approval @break 
@@ -38,7 +42,11 @@
                 @case(request()->is('clearance_hr_view')) Clearance For Approval @break  
                 @case(request()->is('overtimeExt_approval')) Extension Allowance For Approval @break  
                 
-                @case(request()->is('te_application')) Certificate of Attendance @break
+                @case(request()->is('te_application')) 
+                <!-- Certificate of Attendance  -->
+                 @if(env('DB_OWNER')=="manilajockeypf") <th>Certificate of Attendance</th> @else <th>Time Entry</th> @endif
+                @break
+
                 @case(request()->is('overtime_application')) Overtime / Under Time Applications @break
                 @case(request()->is('offset_application')) Offset Applications @break 
                 @case(request()->is('leave_application')) Leave Applications @break

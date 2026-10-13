@@ -198,7 +198,7 @@
                                     <select class="form-select" id="ddlSchedule">
                                           <option value="0">Select Schedule name</option>
                                           @foreach($schedules['rows'] as $rows)
-                                          <option value="{{$rows->scheduleCode}}" <?=($scSchedule==$rows->scheduleCode ? "selected" : "") ?>  >{{$rows->scheduleName}}</option>
+                                          <option value="{{$rows->code}}" <?=($scSchedule==$rows->code ? "selected" : "") ?>  >{{$rows->scheduleName}}</option>
                                           @endforeach
                                     </select>
                         </div>

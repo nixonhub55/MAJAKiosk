@@ -97,7 +97,7 @@
                                     <td>{{$rows->scName}}</td>
                                     <td>{{$rows->scAppDate}}</td> 
                                     <td>{{$rows->scPreviousSched}}</td>
-                                    <td>{{$rows->scSchedule}}</td>    
+                                    <td>{{$rows->tempSchName}}</td>    
                                     <td>{{$rows->r_status}}</td>
                                    <td>
                                     <div class="btn-container">
@@ -190,7 +190,8 @@
       }); 
 
       $(document).ready(function(){ 
-            $('#btnAdd').click(function(){   
+            $('#btnAdd').click(function(){
+                  $('#btnAdd').prop('disabled', true);   
                   show_sc_form(0);
             });
       }); 
@@ -247,8 +248,8 @@
                   }
                   GlovalHTMLObjLoading(0,objID);  
             }else{
-                  //console.log(response);
-                 // GlovalHTMLObjLoading(0,objID);  
+                  /* console.log(response);
+                  GlovalHTMLObjLoading(0,objID);   */
                   window.location.href='{{url("/sc_application")}}';
                   
             }
@@ -285,6 +286,7 @@
                   success: function(response) {  
                         $('#modal_body').html(response);   
                         myModal.show();
+                        $('#btnAdd').prop('disabled', false);
                   },
                   error: function(msg) {  
                   //alert(JSON.parse(msg.responseText).error.msg.msg);

@@ -200,8 +200,8 @@
                         <th>App #</th>
                         <th>Emp ID</th> 
                         <th>Employee Name</th> 
-                        <th>App Date</th> 
-                        <th>Time Entry Date</th>
+                        <th>App Date</th>  
+                        @if(env('DB_OWNER')=="manilajockeypf") <th>COA DATE</th> @else <th>Time Entry Date</th> @endif
                         <th>Type</th> 
                         <th>Status</th>
                         <th>Action</th>

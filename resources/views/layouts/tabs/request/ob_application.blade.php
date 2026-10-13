@@ -189,7 +189,8 @@
       }); 
 
       $(document).ready(function(){ 
-            $('#btnAdd').click(function(){   
+            $('#btnAdd').click(function(){  
+                  $('#btnAdd').prop('disabled', true); 
                   day_list.length = 0;
                   show_ob_form(0);
             });
@@ -302,6 +303,7 @@
                   success: function(response) {  
                         $('#modal_body').html(response);   
                         myModal.show();
+                        $('#btnAdd').prop('disabled', false);
                   },
                   error: function(msg) {  
                   //alert(JSON.parse(msg.responseText).error.msg.msg);

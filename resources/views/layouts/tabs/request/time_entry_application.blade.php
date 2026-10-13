@@ -59,7 +59,7 @@
             <div class="modal-dialog modal-lg">
                   <div class="modal-content">
                         <div class="modal-header bg-primary text-white">
-                              <h5 class="modal-title" id="LeaveModalLabel">Certificate of Attendance Application</h5>
+                              <h5 class="modal-title" id="LeaveModalLabel">@if(env('DB_OWNER')=="manilajockeypf") <th>Certificate of Attendance</th> @else <th>Time Entry</th> @endif Application</h5>
                               <button type="button" class="btn-close" data-bs-dismiss="modal"
                                     aria-label="Close"></button>
                         </div>
@@ -195,7 +195,8 @@
       }); 
 
       $(document).ready(function(){ 
-            $('#btnAdd').click(function(){   
+            $('#btnAdd').click(function(){  
+                  $('#btnAdd').prop('disabled', true); 
                   show_time_entry_form(0);
             });
       }); 
@@ -296,6 +297,7 @@
                   success: function(response) {  
                         $('#modal_body').html(response);   
                         myModal.show();
+                        $('#btnAdd').prop('disabled', false);
                   },
                   error: function(msg) {  
                   //alert(JSON.parse(msg.responseText).error.msg.msg);

@@ -711,8 +711,8 @@ class Authentication extends Model
    public function sendEmail(Request $data_request){
 
          if(env('APP_ENV')=="local"){ // avoid mailing into correct receiver
-            $data_request['sendTo'] = "onnix2559@gmail.com";
-            //$data_request['sendTo'] = "bohikaj438@airychen.com";
+            //$data_request['sendTo'] = "onnix2559@gmail.com";
+            $data_request['sendTo'] = "vemogo1352@aahzz.com";
          }
 
          $start  = microtime(true);

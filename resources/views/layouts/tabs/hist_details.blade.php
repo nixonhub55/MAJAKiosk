@@ -934,7 +934,7 @@
                               </div>
                               <div class="col-md-4">
                                     <label for="appDepartment" class="form-label">Requested Schedule</label>
-                                    <input type="text" class="form-control" id="appDepartment" value="<?=$app_detail->scSchedule?>" readonly>
+                                    <input type="text" class="form-control" id="appDepartment" value="<?=$app_detail->tempSchName?>" readonly>
                               </div>
                         </div>
                   </div>

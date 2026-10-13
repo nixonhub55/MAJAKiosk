@@ -1764,7 +1764,9 @@
         //alert(thisUrl);
         var formData = new FormData();
         formData.append('id', id);   
-        formData.append('status', appStatus);   
+        formData.append('status', appStatus);  
+        formData.append('r_opt',JSON.stringify({"srcDB":'<?= session()->get('database') ?>'}));
+         
         var myModal = new bootstrap.Modal(document.getElementById('dashboardModal'));   
         var csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
         $.ajax({

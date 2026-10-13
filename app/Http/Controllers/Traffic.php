@@ -38,6 +38,7 @@ use App\Models\ClearanceModel;
 use Jenssegers\Agent\Agent;
 use App\Helpers\NetworkHelper;
 use Illuminate\Support\Facades\Http;
+use PhpParser\Node\Stmt\Echo_;
 
 class Traffic extends Controller
 {
@@ -606,7 +607,7 @@ class Traffic extends Controller
 
     //CALENDAR
     public function show_calendar_sched(){
- 
+        
         $yearSched = session()->get('yearSched');
         $identityId=session()->get('identityId');  
         
@@ -622,9 +623,14 @@ class Traffic extends Controller
         $minYear = ($yearSched-3); */
  
         if (session()->get('currentEvents') === null) { 
-            $events = $this->calendar_model->load_sched_advanced(0,$identityId,'',''); 
+            $events = $this->calendar_model->load_sched_advanced(0,$identityId,'','');   
+            foreach ($events as  $item) {
+                echo json_encode($item);
+            }
             session()->put('currentEvents',$events);
         }
+
+         
 
         $events = session()->get('currentEvents');
         $num = 0;
@@ -640,15 +646,17 @@ class Traffic extends Controller
             $row->appDateFrom <= $endDate
         );
         
- 
+        //env('SESSION_COOKIE')
         $data_events = array();
         foreach($filtered as $r) {  
+            $appDoc = ((env('DB_OWNER')=="manilajockeypf" && $r->appDoc=="timeentry") ? "Certificate of Attendance" : $r->appDoc);
             $data_events[] = array(
-				"title" => $r->appDoc." ".$r->appStatus,
+				//"title" => $r->appDoc." ".$r->appStatus, 
+                "title" => $appDoc." ".$r->appStatus,
 				"end" => $r->appDateFrom,
 				"start" => $r->appDateFrom,
 				"color" => $r->appColor,
-				"url" => "javascript:showDetails('".json_encode(["appNo" => $r->appNo, "ID" => $switch, "enc_id" => $r->enc_id, "appDoc" => $r->appDoc, "appStatus" => $r->appStatus])."');",  
+				"url" => "javascript:showDetails('".json_encode(["appNo" => $r->appNo, "ID" => $switch, "enc_id" => $r->enc_id, "appDoc" => $appDoc, "appStatus" => $r->appStatus])."');",  
 			); 
 		}    
  
@@ -730,6 +738,10 @@ class Traffic extends Controller
         }
     }
 
+    public function saveAuditTrails(){
+         $start  = microtime(true);
+         $this->authentication->sp_userAuditTrails(1,'Try Catch','Error',$_POST['details'],$start); 
+    }
 
     public function saveSystemErrors() { 
 
@@ -910,7 +922,7 @@ class Traffic extends Controller
 
     public function gotoDashboardCustomization(){ 
 
-     
+        $timeEntryCust = (env('DB_OWNER')=="manilajockeypf") ? "COA" : "Time Entry";
 
         $data['mode'] = session()->get('dash_edit_mode'); 
         $data['companyName'] = "Company Name";
@@ -962,7 +974,7 @@ class Traffic extends Controller
             ['title' => 'Offset', 'count' => $offset_forApproval, 'color' => 'bg-custom', 'icon' => 'bi-file-check', 'link' => route('offset_approval')],
             ['title' => 'Time Adjustment', 'count' => $timeadjustment_forApproval, 'color' => 'bg-custom', 'icon' => 'bi-clock-history', 'link' => route('time_adjust_approval')],
             ['title' => 'Official Business', 'count' => $officialbusiness_forApproval, 'color' => 'bg-custom', 'icon' => 'bi-buildings-fill', 'link' => route('ob_approval')],
-            ['title' => 'Time Entry', 'count' => $timeentry_forApproval, 'color' => 'bg-custom', 'icon' => 'fa-solid fa-business-time', 'link' => route('timeentry_approval')],
+            ['title' => $timeEntryCust, 'count' => $timeentry_forApproval, 'color' => 'bg-custom', 'icon' => 'fa-solid fa-business-time', 'link' => route('timeentry_approval')],
             ['title' => 'Schedule Change', 'count' => $schedulechange_forApproval, 'color' => 'bg-custom', 'icon' => 'fa-solid fa-calendar-days', 'link' => route('sc_approval')],
             ['title' => 'HRD Certificate', 'count' => $hrdCert_forApproval, 'color' => 'bg-custom', 'icon' => 'fa-solid fa-certificate', 'link' => route('hrd_approval')],
             
@@ -974,7 +986,7 @@ class Traffic extends Controller
             ['title' => 'Offset', 'count' => $offset_pending_request, 'color' => 'bg-custom', 'icon' => 'bi-file-check', 'link' => route('offset_application')],
             ['title' => 'Time Adjustment', 'count' => $timeadjustment_pending_request, 'color' => 'bg-custom', 'icon' => 'bi-clock-history', 'link' => route('time_adj_application')],
             ['title' => 'Official Business', 'count' => $officialbusiness_pending_request, 'color' => 'bg-custom', 'icon' => 'bi-buildings-fill', 'link' => route('ob_application')],
-            ['title' => 'Time Entry', 'count' => $timeentry_pending_request, 'color' => 'bg-custom', 'icon' => 'fa-solid fa-business-time', 'link' => route('te_application')],
+            ['title' => $timeEntryCust, 'count' => $timeentry_pending_request, 'color' => 'bg-custom', 'icon' => 'fa-solid fa-business-time', 'link' => route('te_application')],
             ['title' => 'Schedule Change', 'count' => $schedulechange_pending_request, 'color' => 'bg-custom', 'icon' => 'fa-solid fa-calendar-days', 'link' => route('sc_application')],
             ['title' => 'HRD Certificate', 'count' => $hrdCert_pending_request, 'color' => 'bg-custom', 'icon' => 'fa-solid fa-certificate', 'link' => route('hrd_application')],
             ];
@@ -2103,9 +2115,7 @@ class Traffic extends Controller
             $_appNo = $this->authentication->f_endecrypt($_POST['appNo'], 'd', $identityId);
             return $this->authentication->sp_delete_application_form([0, $switchNo, $_appNo]);
         }
-
-    
-
+ 
         if ($mode == 14) { /* Multi-database multi approve */
             header('Content-Type: application/x-ndjson');
             header('Cache-Control: no-cache, no-store, must-revalidate');
@@ -2129,9 +2139,7 @@ class Traffic extends Controller
             $approvedValues = ['1', 'A'];
 
             if (!is_array($items) || empty($items)) { return [ 'num' => 1, 'msg' => 'No application was selected.' ]; }
-
-     
-           
+  
             foreach ($items as $index => $item) {
  
                 $sourceDatabase = trim((string) ($item['_srcDb'] ?? ''));
@@ -2179,8 +2187,8 @@ class Traffic extends Controller
             * Approval emails
             */
             $num = 0;
-            foreach ($items as $item) {
-
+            foreach ($items as $item) { 
+                //$zzz = $_POST['12312'];
                 $id             = $item['AppNo'];
                 $sourceDatabase = $item['_srcDb'];
                  
@@ -2308,9 +2316,7 @@ class Traffic extends Controller
 
             return $submitResponse;
         }
-
-
-
+ 
         if ($mode == 15) { /*post announcement*/ 
             $pint_mode = $_POST['pint_mode'];
             $pId = $_POST['pId'];

@@ -327,8 +327,8 @@
                   GlovalHTMLObjLoading(0,objID); 
             }
            else{
-            console.log(response);
-            //window.location.href='{{url("/leave_approval")}}'; 
+           // console.log(response);
+            window.location.href='{{url("/leave_approval")}}'; 
            }
  
       }

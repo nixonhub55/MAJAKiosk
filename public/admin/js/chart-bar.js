@@ -1,3 +1,9 @@
+const DB_OWNER = window.appConfig.dbOwner;
+const time_entry_label = (DB_OWNER=="manilajockeypf") ? "COA" : "Time Entry";
+
+
+ 
+
 try {
   var ctx = document.getElementById("myBarChart");
 var applicationsData = [
@@ -17,7 +23,7 @@ var totalApplications = applicationsData.reduce((total, num) => total + num, 0);
 var myLineChart = new Chart(ctx, {
   type: 'bar',
   data: {
-    labels: ["Overtime", "Offset", "Leave", "Time Adjustment", "Official Business","Time Entry","Change Schedule","HDR Certificate"]
+    labels: ["Overtime", "Offset", "Leave", "Time Adjustment", "Official Business",time_entry_label,"Change Schedule","HDR Certificate"]
       .map((label, index) => {
         let value = applicationsData[index];
         let percentage = ((value / totalApplications) * 100).toFixed(2);

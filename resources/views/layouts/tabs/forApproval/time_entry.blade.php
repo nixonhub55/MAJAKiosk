@@ -27,7 +27,7 @@
             <div class="modal-dialog modal-lg">
                   <div class="modal-content">
                         <div class="modal-header bg-primary text-white">
-                              <h5 class="modal-title" id="teModalLabel">Time Entry Application Details</h5>
+                              <h5 class="modal-title" id="teModalLabel">@if(env('DB_OWNER')=="manilajockeypf") <th>COA</th> @else <th>Time Entry</th> @endif Application Details</h5> 
                               <button type="button" class="btn-close" data-bs-dismiss="modal"  aria-label="Close"></button>
                         </div>
                         <div class="modal-body" id="modal_body"></div> 
@@ -323,6 +323,7 @@
             
            // console.log(response);
             if (response.num!==0){
+                  console.log(response);
                   GlovalHTMLObjLoading(0,objID); 
             }
            else{

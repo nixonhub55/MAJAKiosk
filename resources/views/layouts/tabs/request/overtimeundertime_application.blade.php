@@ -315,6 +315,7 @@
                         }); 
                                     
                         myModal.show();
+                        $('#btnAdd').prop('disabled', false);
                   },
                   error: function(msg) {
                   //alert(JSON.parse(msg.responseText).error.msg.msg);
@@ -327,7 +328,8 @@
       }
 
       $(document).ready(function(){ 
-            $('#btnAdd').click(function(){   
+            $('#btnAdd').click(function(){  
+                  $('#btnAdd').prop('disabled', true); 
                   show_ovrtime_form(0);
             });
       });

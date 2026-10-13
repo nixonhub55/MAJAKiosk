@@ -4,6 +4,7 @@ var currentPage = 1;
 var url = window.location.origin + window.location.pathname;
 var baseUrl = url.split('/').slice(0, 4).join('/');
 var execDone = 0;
+var approvalCheckboxTriggered = 0;
 var globalSysteError = 'An unexpected system error occurred. Please try again in a few moments. If the problem persists, contact your system administrator or support team for assistance.';
 var maxMinExec = 300000;  // 60000 for 1 min
 var JsonMessges = {
@@ -517,16 +518,64 @@ function saveErrorLogs(log) {
 
 }
 
+
+function getLaravelErrorMessage(responseText) {
+
+    // First try JSON
+    try {
+        const json = JSON.parse(responseText);
+
+        if (json.message) {
+            return json.message;
+        }
+
+        if (json.error) {
+            return json.error;
+        }
+    } catch (e) {
+        // Not JSON, continue
+    }
+
+    // Laravel HTML exception page
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(responseText, 'text/html');
+
+    // Laravel Ignition usually has the exception message in a code/pre element
+    const bodyText = doc.body?.innerText || '';
+
+    // Find common Laravel exception messages
+    const match = bodyText.match(
+        /Undefined array key [^\n]+/
+    );
+
+    if (match) {
+        return match[0].trim();
+    }
+
+    // Generic fallback
+    return 'Unknown server error';
+}
+
+function isValidJSON(str) {
+    try {
+        JSON.parse(str);
+        return true;
+    } catch (e) {
+        return false;
+    }
+}
+
 async function exec_XMLHttpRequest(formData, this_page) {
     this.execDone = 1;
     refreshNum = 0;
-
+ 
     CloasePopupInformMessage('spanInfo');
 
     return new Promise((resolve, reject) => {
 
         var csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
         var xhr = new XMLHttpRequest();
+        
 
         xhr.open('POST', this_page, true);
         xhr.setRequestHeader('X-CSRF-TOKEN', csrfToken);
@@ -542,12 +591,35 @@ async function exec_XMLHttpRequest(formData, this_page) {
             progressBuffer += newData;
             var lines = progressBuffer.split("\n");
             progressBuffer = lines.pop();
-
+            var allProgressing = document.querySelectorAll('.progress-message');
+            var num = 0;
+            
             lines.forEach(line => { 
                 line = line.trim();
-                console.log(line);
+                //console.log(123);
                 if (!line) {
                     return;
+                }
+                
+                if (!isValidJSON(line)){
+                    var errorReturn = ({
+                        num:1, msg : 'Error parsing JSON'
+                    });
+                    
+                    
+                    allProgressing.forEach(element => {
+                        //if(element.innerHTML.trim()=="Processing..." && num==0){
+                        if(element.innerHTML.trim()=="Processing..."){
+                            
+                            setTimeout(() => {
+                                element.innerHTML = 'Done ';
+                            }, 2000);
+                            //num = 1;
+                        } 
+                        //element.innerHTML = 'Error ';
+                    }); 
+                    /* resolve(errorReturn); 
+                    return;  */
                 }
 
                 try {
@@ -583,34 +655,54 @@ async function exec_XMLHttpRequest(formData, this_page) {
         };
 
         
-        xhr.onload = () => {
-
+        xhr.onload = async() => { 
             if (xhr.status >= 200 && xhr.status < 300) {
 
-                this.execDone = 0;
-
-
+                this.execDone = 0; 
                 var lines = xhr.responseText
                     .trim()
                     .split("\n");
-
-                var finalResponse = JSON.parse(
+                 
+                try {
+                    var finalResponse = JSON.parse(
                     lines[lines.length - 1]
-                );
-                //console.log('Done');
-                resolve(finalResponse);
+                    );
+                    resolve(finalResponse);
+                } catch (error) {
 
-            } else {
+                    let errorMessage = getLaravelErrorMessage(error); 
+                    var formData = new FormData(); 
+                    formData.append('details', errorMessage);
+                    await call_page_into_div(formData, "saveAuditTrails"); 
 
-                reject(new Error(
-                    'Request failed with status: ' + xhr.status
-                ));
+                    var errorReturn = ({
+                        num:0, msg : 'error'
+                    }); 
+                    resolve(errorReturn);
+                }
 
+            } else { 
+                let errorMessage = getLaravelErrorMessage(xhr.responseText); 
+                var formData = new FormData(); 
+                formData.append('details', errorMessage);
+                await call_page_into_div(formData, "saveAuditTrails"); 
+
+                reject(new Error(  'Request failed with status: ' + xhr.status  )); 
                 saveErrorLogs({ 'logId': 1, 'identityId': identityId,  'formData': formData,  'time': new Date(),  'errorMsg': xhr.responseText  });
             }
         };
 
-        xhr.onerror = function () {
+        xhr.onerror = async function () { 
+
+            let errorMessage = getLaravelErrorMessage(xhr.responseText); 
+            var formData = new FormData(); 
+            formData.append('details', errorMessage);
+            await call_page_into_div(formData, "saveAuditTrails"); 
+
+
+            var netSpan = document.getElementById('netSpan');
+            netSpan.innerHTML = "";
+            netSpan.innerHTML = `<div class="alert alert-warning"><i class="fas fa-wifi text-danger"></i>${errorMessage}</div> `; 
 
             reject(new Error('Network error occurred'));
 

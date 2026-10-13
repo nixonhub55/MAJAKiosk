@@ -51,7 +51,7 @@
                                           <th>Work Date</th> 
                                           <th>From</th>
                                           <th>To</th>
-                                          <th>Time</th>
+                                          <!-- <th>Time</th> -->
                                           <th>Total Hours</th>
                                           <th>Reason</th>  
                                           <th id="hdr_rjct">Rejection Remarks</th>  
@@ -80,7 +80,7 @@
                                     <td>{{$rows->otDate}}</td>
                                     <td>{{$rows->otTimeFrom}}</td>
                                     <td>{{$rows->otTimeTo}}</td>
-                                    <td>{{$rows->otTimeTo}}</td>
+                                    <!-- <td>{{$rows->otTimeTo}}</td> -->
                                     <td>{{$rows->otTotHours}}</td>
                                     <td>{{$rows->otReason}}</td> 
 

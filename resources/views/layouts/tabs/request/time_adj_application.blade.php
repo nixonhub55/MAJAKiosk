@@ -195,7 +195,8 @@
       }); 
 
       $(document).ready(function(){ 
-            $('#btnAdd').click(function(){   
+            $('#btnAdd').click(function(){  
+                  $('#btnAdd').prop('disabled', true); 
                   show_time_adjustment_form(0);
             });
       }); 
@@ -290,6 +291,7 @@
                   success: function(response) {  
                         $('#modal_body').html(response);   
                         myModal.show();
+                        $('#btnAdd').prop('disabled', false);
                   },
                   error: function(msg) { 
                   //alert(JSON.parse(msg.responseText).error.msg.msg);

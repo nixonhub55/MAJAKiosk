@@ -348,7 +348,7 @@
             <div class="col-md-4">
                   <label id="lbl_otTimeTo" for="otTimeTo" class="form-label">To Time</label>
                   <div style="position: relative;">
-                        <input type="text" id="otTimeTo" value="<?= $otTimeTo ?>" class="form-control" autocomplete="off"  onchange="return time_validator()"  onkeyup="filterTime(this.id,'autocomplete1')"/>
+                        <input type="text" id="otTimeTo" value="<?= $otTimeTo ?>" class="form-control" autocomplete="off"  onchange="return time_validator()"  onkeyup="filterTime(this.id,'autocomplete2')"/>
                         <div id="autocomplete2" style="display: none;" class="customizedAutoComplete" ></div>
                   </div> 
             </div>
@@ -426,7 +426,15 @@
 
             var totalTime = minutesToTime(netMinutes);
             
-            if ((totalTime<=0) || totalTime=="NaN:NaN"){  totalTime = "00:00"; }
+            //if ((totalTime<=0) || totalTime=="NaN:NaN"){  totalTime = "00:00"; }
+
+            if (netMinutes <= 0 || isNaN(netMinutes)) {  totalTime = "00:00";}
+
+            // Greater than 8 hours
+            //if (netMinutes > 8 * 60) {
+            if (netMinutes >= 9 * 60) {
+                  console.log("Need to add breaktime");
+            }
 
             document.getElementById('appTotalTime').value = totalTime;
            

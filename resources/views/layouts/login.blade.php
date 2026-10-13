@@ -96,10 +96,10 @@ header('Access-Control-Allow-Headers: Content-Type,x-prototype-version,x-request
     $user = "";
     $pass = "";
 
-    if (env('APP_ENV')=="local"){
+   /*  if (env('APP_ENV')=="local"){
         $user = "123123";
         $pass = "12312";
-    }
+    } */
 
     ?>
 <body>

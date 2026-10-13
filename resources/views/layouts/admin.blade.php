@@ -1,22 +1,4 @@
-<script>
-    var identityId = '<?= session()->get('identityId') ?>'; 
-  
-    
-    /* async function getErrorsNow() {
-        return new Promise((resolve, reject) => {
-            var csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-            var xhr = new XMLHttpRequest();
-            xhr.open('POST', "{{url('/saveSystemErrors')}}", true);
-            xhr.setRequestHeader('X-CSRF-TOKEN', csrfToken);  
-            xhr.onload = function () {
-                resolve(JSON.parse(xhr.responseText)); 
-                };  
-            xhr.send(errorLogs); 
-        }); 
-    } */
 
-
-</script>
 
  
 
@@ -28,9 +10,9 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title> Payfactor</title>
-
-
+    <title>Pay factor</title>
+    <script>   var identityId = '<?= session()->get('identityId') ?>';  </script> 
+    <script>  window.appConfig = {   dbOwner: @json(config('app.db_owner')) };</script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
     <link href="{{asset('admin/css/styles.css')}}" rel="stylesheet" />

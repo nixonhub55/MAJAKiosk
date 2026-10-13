@@ -65,8 +65,8 @@
       }
 </style>
  <?php 
-     
-      $otAppNo = $details['rows'][0]->otAppNo;
+      $srcDB =json_decode($r_opt)->srcDB;
+      $otAppNo = $details['rows'][0]->otAppNo ?? 0;
       $emp_id = $details['rows'][0]->otID;
       $otName = $details['rows'][0]->otName;
       $AppDate = $details['rows'][0]->otAppDate;
@@ -83,19 +83,21 @@
       $otToDate = $details['rows'][0]->otToDate;  
       $location = $details['rows'][0]->location;  
       
-      
+      //echo $otAppNo;
       //return;
       //echo json_encode($otExtAllowDetails);
-      //echo json_encode($details['rows']);
+     // echo json_encode($details['rows']);
  
  ?> 
  <script>
       async function  getRegularSched() {  
             var details = {
-                  "appNo" : 0,
+                  //"appNo" : 0,
+                  "appNo" : '<?=$otAppNo?>',
                   "username" : '<?=$emp_id ?>',
                   "df" : '<?= $otFrDate ?>',
                   "dt" : '<?= $otToDate ?>',
+                  "srcDB" : '<?=$srcDB?>'
             }  
             var container = document.getElementById('divExtensionAllowanceDetails');
             var formData = new FormData();   
